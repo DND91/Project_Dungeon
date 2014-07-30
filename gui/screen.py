@@ -1,0 +1,181 @@
+#!/usr/bin/python
+import sfml as sf
+from gui.gui_button import *
+from gui.gui_text import *
+from gui.gui_toys import *
+from gui.gui_world import *
+
+class Screen:
+    def __init__(self):
+        self.name = "SCREEN"
+        self.gui_list = []
+    
+    def event(self, game, event):
+        if type(event) is sf.MouseButtonEvent: #Better aiming with mouse click...
+            if event.button == sf.Mouse.LEFT and event.released:
+                rect = sf.Rectangle(event.position, sf.Vector2(4, 4))
+                for object in self.gui_list:
+                    if object.collision(rect):
+                        self.mouseClick(game, object)
+                        break
+        
+    
+    def mouseClick(self, game, object):
+        print(object)
+    
+    def update(self, game, delta):
+        for object in self.gui_list:
+            object.update(game, delta)
+    
+    def draw(self, ps, game):
+        for object in self.gui_list:
+            object.draw(ps, game)
+    
+
+class IntroScreen(Screen):
+    
+    def __init__(self):
+        self.name = "INTRO"
+        self.gui_list = []
+        title = GuiText(10,10, "PROJECT: DUNG!")
+        title.text.character_size = 120
+        title.text.style = sf.Text.BOLD
+        self.gui_list.append(title)
+        self.nextButton = GuiButton((1024/2)-(60), 640-50, "Click To Start")
+        self.gui_list.append(self.nextButton)
+    
+    def mouseClick(self, game, object):
+        if self.nextButton == object:
+            game.next = MainMenuScreen()
+
+
+
+
+
+class MainMenuScreen(Screen):
+    #playButton = 0
+    #optionButton = 0
+    #helpButton = 0
+    #exitButton = 0
+    
+    def __init__(self):
+        self.name = "MAIN_MENU"
+        self.gui_list = []
+        title = GuiText(10,10, "PROJECT: DUNG!")
+        title.text.character_size = 32
+        title.text.style = sf.Text.BOLD
+        self.gui_list.append(title)
+        
+        space = 30
+        self.playButton = GuiButton(10, 50 + space * 0, "Play")
+        self.gui_list.append(self.playButton)
+        
+        self.optionButton = GuiButton(10, 50 + space * 1, "Option")
+        self.gui_list.append(self.optionButton)
+        
+        self.helpButton = GuiButton(10, 50 + space * 2, "Help")
+        self.gui_list.append(self.helpButton)
+        
+        self.exitButton = GuiButton(10, 50 + space * 3, "Exit")
+        self.gui_list.append(self.exitButton)
+    
+    def mouseClick(self, game, object):
+        if self.playButton == object:
+            game.next = PlayScreen(game, self)
+        elif self.optionButton == object:
+            game.next = OptionScreen(self)
+        elif self.helpButton == object:
+            game.next = HelpScreen(self)
+        elif self.exitButton == object:
+            game.running = False
+
+class OptionScreen(Screen):
+    
+    def __init__(self, lastScreen):
+        self.name = "OPTIONS"
+        self.gui_list = []
+        self.lastScreen = lastScreen
+        title = GuiText(10,10, "OPTIONS")
+        title.text.character_size = 32
+        title.text.style = sf.Text.BOLD
+        self.gui_list.append(title)
+        
+        self.backButton = GuiButton(10, 50, "Back")
+        self.gui_list.append(self.backButton)
+    
+    def mouseClick(self, game, object):
+        if self.backButton == object:
+            game.next = self.lastScreen
+            
+
+class HelpScreen(Screen):
+    
+    def __init__(self, lastScreen):
+        self.name = "HELP"
+        self.gui_list = []
+        self.lastScreen = lastScreen
+        title = GuiText(10,10, "HELP")
+        title.text.character_size = 32
+        title.text.style = sf.Text.BOLD
+        self.gui_list.append(title)
+        
+        self.backButton = GuiButton(10, 50, "Back")
+        self.gui_list.append(self.backButton)
+    
+    def mouseClick(self, game, object):
+        if self.backButton == object:
+            game.next = self.lastScreen
+
+class PlayScreen(Screen):
+    
+    def __init__(self, game, lastScreen):
+        self.name = "PLAY"
+        self.gui_list = []
+        self.lastScreen = lastScreen
+        
+        self.playGui = GuiWorld()
+        self.gui_list.append(self.playGui)
+        game.window.view = sf.View(sf.Rectangle((0, 0), (game.window.width, game.window.height)))
+        
+        self.title = GuiText(10,10, "PLAY")
+        self.title.text.character_size = 32
+        self.title.text.style = sf.Text.BOLD
+        self.gui_list.append(self.title)
+        
+        self.backButton = GuiButton(10, 50, "Back")
+        self.gui_list.append(self.backButton)
+        
+    
+    def update(self, game, delta):
+        super().update(game,delta)
+        pos = sf.Vector2(3+game.window.view.center.x-game.window.width/2, 3+game.window.view.center.y-game.window.height/2)
+        self.backButton.position = sf.Vector2(10 + pos.x, 50 + pos.y)
+        self.title.position = sf.Vector2(10 + pos.x, 10 + pos.y)
+        
+    
+    
+    def mouseClick(self, game, object):
+        if self.backButton == object:
+            game.next = self.lastScreen
+            game.window.view = game.window.default_view
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

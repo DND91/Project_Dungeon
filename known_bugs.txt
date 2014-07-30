@@ -1,0 +1,5 @@
+#KNOWN BUGS!
+
+-- Resize the window couses bugs with the mouse and gui collistion detection
+-- Kollistion fungerar, men ibland kan tyngre enteties trycka in lättare i andra tiles/ententiter.
+    Även få lättare att teleportera genom flera block.
