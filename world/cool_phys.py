@@ -6,6 +6,7 @@ import world.isometric_tile as iso
 import game as game
 import functools
 from world.cool_math import *
+import world.tile_handler as th
 
 class PhysBody:
     
@@ -18,9 +19,14 @@ class PhysBody:
     
 
 class TileInfo:
-    def __init__(self, char, info):
+    def __init__(self, char, solid,floor, roof, left, right, tileHandler):
         self.char = char
-        self.info = info
+        self.floor = floor
+        self.roof = roof
+        self.left = left
+        self.right = right
+        self.tileHandler = tileHandler
+        self.solid = solid
     
 
 class PhysTile:
@@ -33,14 +39,12 @@ class PhysTile:
         self.info = tileInfo
         
         pos = iso.worldToScreen(self.rectangle.position)
-        floor = (self.info.info & 1) == 1
-        roof = (self.info.info & 2) == 2
-        left = (self.info.info & 4) == 4
-        right = (self.info.info & 8) == 8
-        self.tile = iso.IsometricTile(self, pos.x, pos.y, game.Game, floor, roof, left, right)
+        self.drawTile = iso.IsometricTile(self, pos.x, pos.y, game.Game, self.info.floor, self.info.roof, self.info.left, self.info.right)
+        self.tileHandler = self.info.tileHandler
+        self.tileHandler.setup(self)
     
     def draw(self, ps, game):
-        self.tile.draw(ps, game)
+        self.drawTile.draw(ps, game)
 
 class PhysChunk:
     #Chunk Size, Tiles per Chunk
@@ -61,12 +65,20 @@ class PhysChunk:
             for tileX in range(self.chunkSize):
                 pos = sf.Vector2(self.rectangle.left + tileX * PhysTile.tileSize, self.rectangle.top + tileY * PhysTile.tileSize)
                 if x == 0 and y == 0:
-                    self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, TileInfo("_", 1))
+                    tileInfo = TileInfo("_", False,"NONE_FLOOR", "", "", "", th.TileHandler())
+                    self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 else:
-                    if random.randint(0,10) == 0:
-                        self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, TileInfo("#", 14))
-                    else:
-                        self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, TileInfo("_", 1))
+                    if random.randint(0,10) == 0: #BLOCK
+                        tileInfo = TileInfo("#", True, "", "NONE_ROOF", "NONE_WALLS", "NONE_WALLS", th.TileHandler())
+                        self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                    elif random.randint(0,10) == 0: #DOOR
+                        pos2 = iso.worldToScreen(pos)
+                        drawTile = iso.IsometricTile(0, pos2.x, pos2.y, game.Game, "OPEN_DOOR", "", "", "")
+                        tileInfo = TileInfo("#", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile))
+                        self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                    else: #EMPTY
+                        tileInfo = TileInfo("_", False, "NONE_FLOOR", "", "", "", th.TileHandler())
+                        self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 self.draweble.append(self.tiles[tileY][tileX])
         def compare(a, b):
             return (a.rectangle.position.y + a.rectangle.position.x) - (b.rectangle.position.y + b.rectangle.position.x)
@@ -228,7 +240,7 @@ class PhysWorld:
                     for y in self.chunks[chunk.y][chunk.x].tiles:
                         for tile in y:
                             if intersects(body, tile):
-                                if ((tile.info.info & 2) == 2 or (tile.info.info & 4) == 4 or (tile.info.info & 8) == 8):
+                                if tile.info.solid:
                                     g = gap(tile, body)
                                     l, t, w, h = body.rectangle
                                     if math.fabs(g.x) <= math.fabs(g.y):
@@ -238,7 +250,7 @@ class PhysWorld:
                                     body.rectangle.__init__((l, t), (w, h))
                                     print("TILE COLLISTION WITH BODY!")
                                 #Add Collision Hook For Tiles, Ent Vs Tile
-                                tile.tile.active = True
+                                tile.drawTile.active = True #FIX! It is activating draw, but not handler
     
     def bodyBody(self, body):
         for colum in body.chunks:

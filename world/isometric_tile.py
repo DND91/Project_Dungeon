@@ -13,33 +13,33 @@ class IsometricTile:
     def __init__(self, body, x, y, game, floor, roof, left, right):
         y += 32
         #x -= 32
-        if floor:
-            texture = game.textures.fetch("NONE_FLOOR")
+        if not (floor == 0 or floor == ""):
+            texture = game.textures.fetch(floor)
             self.floor = sf.Sprite(texture)
             self.floor.position = sf.Vector2(x,y)
-            texture2 = game.textures.fetch("ACTIVE_FLOOR")
+            texture2 = game.textures.fetch("ACTIVE_" + floor)
             self.active_floor = sf.Sprite(texture2)
             self.active_floor.position = sf.Vector2(x,y)
         else:
             self.floor = 0
             self.active_floor = 0
         
-        if roof:
-            texture = game.textures.fetch("NONE_ROOF")
+        if not (roof == 0 or roof == ""):
+            texture = game.textures.fetch(roof)
             self.roof = sf.Sprite(texture)
             self.roof.position = sf.Vector2(x,y-31)
         else:
             self.roof = 0
-        if left:
-            texture = game.textures.fetch("NONE_WALLS")
+        if not (left == 0 or left == ""):
+            texture = game.textures.fetch(left)
             self.left = sf.Sprite(texture)
             self.left.position = sf.Vector2(x,y-15)
             self.left.texture_rectangle = sf.Rectangle((0,0),(32,47))
         else:
             self.left = 0
         
-        if right:
-            texture = game.textures.fetch("NONE_WALLS")
+        if not (right == 0 or right == ""):
+            texture = game.textures.fetch(right)
             self.right = sf.Sprite(texture)
             self.right.position = sf.Vector2(x+32,y-15)
             self.right.texture_rectangle = sf.Rectangle((32,0),(32,47))
@@ -49,15 +49,14 @@ class IsometricTile:
         self.x = x
         self.y = y
         self.body = body
-        self.active = False
     
     def draw(self, ps, game):
         if self.floor != 0 and ps == 0:
-            if self.active:
-                game.window.draw(self.active_floor)
-                self.active = False
-            else:
-                game.window.draw(self.floor)
+            #if self.active:
+            #    game.window.draw(self.active_floor)
+            #    self.active = False
+            #else:
+            game.window.draw(self.floor)
         if self.roof != 0 and ps == 1:
             game.window.draw(self.roof)
         if self.left != 0 and ps == 1:

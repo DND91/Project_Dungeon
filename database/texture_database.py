@@ -17,6 +17,8 @@ class TextureDatabase:
         self.load("BALL", "./resources/ballCube.png")
         self.load("SOLID", "./resources/solidCube.png")
         self.load("PLAYER", "./resources/playerCube.png")
+        self.load("OPEN_DOOR", "./resources/open_door.png")
+        self.load("CLOSED_DOOR", "./resources/closed_door.png")
     
     def load(self, name, path):
         try:

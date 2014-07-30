@@ -174,10 +174,8 @@ class PlayScreen(Screen):
                     #INTERACTION HOOK, PLAYER MOUSE VS BODY
             else:
                 tiles = self.playGui.physWorld.getTilesInBody(n_rect)
-                if 0 < len(tiles):
-                    print("TILES FOUND!")
-                for t in tiles:
-                    t.tile.active = True
+                for t in tiles: #Change to only one
+                    t.tileHandler.mouseClick(game, object, rect)
                     #INTERACTION HOOK, PLAYER MOUSE VS TILE
             
             
