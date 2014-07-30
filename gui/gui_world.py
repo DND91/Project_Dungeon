@@ -60,6 +60,7 @@ class GuiWorld(GuiObject):
         self.player = entity.PlayerEntity(1*64+5,1*64+5, game.Game)
         self.enteties.append(self.player)
         self.physWorld.addBody(self.player.body)
+        game.Game.player = self.player
         
         #OBJECTS
         for t in range(50):
@@ -95,8 +96,8 @@ class GuiWorld(GuiObject):
                 x += 1
             y += 1
     
-    def collision(self, mouseRect):
-        return False
+    #def collision(self, mouseRect):
+    #    return False
     
     def update(self, game, delta):
         for entity in self.enteties:

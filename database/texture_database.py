@@ -10,6 +10,7 @@ class TextureDatabase:
     def load_all(self):
         self.load("NONE", "./resources/noneCube.png")
         self.load("NONE_FLOOR", "./resources/notextureIsometric.png")
+        self.load("ACTIVE_FLOOR", "./resources/active_tile.png")
         self.load("NONE_WALLS", "./resources/wallsIsometric.png")
         self.load("NONE_ROOF", "./resources/roofIsometric.png")
         self.load("HORSE", "./resources/horse.png")

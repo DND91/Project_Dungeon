@@ -12,3 +12,4 @@ class Game:
     offsetX = 0
     offsetY = 0
     textures = TextureDatabase()
+    player = 0

@@ -10,15 +10,19 @@ def screenToWorld(v):
 class IsometricTile:
     radius = 16
     
-    def __init__(self, x, y, game, floor, roof, left, right):
+    def __init__(self, body, x, y, game, floor, roof, left, right):
         y += 32
         #x -= 32
         if floor:
             texture = game.textures.fetch("NONE_FLOOR")
             self.floor = sf.Sprite(texture)
             self.floor.position = sf.Vector2(x,y)
+            texture2 = game.textures.fetch("ACTIVE_FLOOR")
+            self.active_floor = sf.Sprite(texture2)
+            self.active_floor.position = sf.Vector2(x,y)
         else:
             self.floor = 0
+            self.active_floor = 0
         
         if roof:
             texture = game.textures.fetch("NONE_ROOF")
@@ -44,10 +48,16 @@ class IsometricTile:
         
         self.x = x
         self.y = y
+        self.body = body
+        self.active = False
     
     def draw(self, ps, game):
         if self.floor != 0 and ps == 0:
-            game.window.draw(self.floor)
+            if self.active:
+                game.window.draw(self.active_floor)
+                self.active = False
+            else:
+                game.window.draw(self.floor)
         if self.roof != 0 and ps == 1:
             game.window.draw(self.roof)
         if self.left != 0 and ps == 1:

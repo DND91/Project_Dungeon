@@ -4,6 +4,8 @@ from gui.gui_button import *
 from gui.gui_text import *
 from gui.gui_toys import *
 from gui.gui_world import *
+import world.isometric_tile as iso
+import world.cool_phys as world
 
 class Screen:
     def __init__(self):
@@ -16,11 +18,11 @@ class Screen:
                 rect = sf.Rectangle(event.position, sf.Vector2(4, 4))
                 for object in self.gui_list:
                     if object.collision(rect):
-                        self.mouseClick(game, object)
+                        self.mouseClick(game, object, rect)
                         break
         
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         print(object)
     
     def update(self, game, delta):
@@ -44,7 +46,7 @@ class IntroScreen(Screen):
         self.nextButton = GuiButton((1024/2)-(60), 640-50, "Click To Start")
         self.gui_list.append(self.nextButton)
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         if self.nextButton == object:
             game.next = MainMenuScreen()
 
@@ -79,7 +81,7 @@ class MainMenuScreen(Screen):
         self.exitButton = GuiButton(10, 50 + space * 3, "Exit")
         self.gui_list.append(self.exitButton)
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         if self.playButton == object:
             game.next = PlayScreen(game, self)
         elif self.optionButton == object:
@@ -103,7 +105,7 @@ class OptionScreen(Screen):
         self.backButton = GuiButton(10, 50, "Back")
         self.gui_list.append(self.backButton)
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         if self.backButton == object:
             game.next = self.lastScreen
             
@@ -122,7 +124,7 @@ class HelpScreen(Screen):
         self.backButton = GuiButton(10, 50, "Back")
         self.gui_list.append(self.backButton)
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         if self.backButton == object:
             game.next = self.lastScreen
 
@@ -154,10 +156,24 @@ class PlayScreen(Screen):
         
     
     
-    def mouseClick(self, game, object):
+    def mouseClick(self, game, object, rect):
         if self.backButton == object:
             game.next = self.lastScreen
             game.window.view = game.window.default_view
+        elif self.playGui == object:
+            pos = sf.Vector2(game.window.view.center.x-game.window.width/2, game.window.view.center.y-game.window.height/2)
+            mouse = sf.Mouse.get_position(game.window)
+            pos.x += mouse.x
+            pos.y += mouse.y
+            pos = iso.screenToWorld(pos)
+            n_rect = world.PhysBody(0, pos.x-64*1.5-2, pos.y-32-2, 4, 4)
+            tiles = self.playGui.physWorld.getTilesInBody(n_rect)
+            for t in tiles:
+                t.tile.active = True
+                #INTERACTION HOOK, PLAYER MOUSE VS TILE
+            
+            
+            
 
 
 
