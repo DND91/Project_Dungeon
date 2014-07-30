@@ -143,7 +143,16 @@ class PhysWorld:
                             if intersects(tile, body):
                                 tiles.append(tile)
         return tiles
-        
+    
+    def getBodiesInBody(self, body):
+        bodies = []
+        for chunks in self.chunks:
+            for chunk in chunks:
+                if intersects(chunk, body):
+                    for body2 in chunk.bodies:
+                        if intersects(body2, body):
+                            bodies.append(body2)
+        return bodies
     
     def calculateChunks(self, body):
         self.removeFromChunks(body)
@@ -227,6 +236,7 @@ class PhysWorld:
                                     else:
                                         t += g.y
                                     body.rectangle.__init__((l, t), (w, h))
+                                    print("TILE COLLISTION WITH BODY!")
                                 #Add Collision Hook For Tiles, Ent Vs Tile
                                 tile.tile.active = True
     
@@ -250,6 +260,7 @@ class PhysWorld:
                                 t += g.y
                             light.rectangle.__init__((l, t), (w, h))
                             #Add Collision Hook For Entities, Body Vs Body
+                            print("BODY COLLISTION WITH BODY!")
     
     
     def update(self, delta):
