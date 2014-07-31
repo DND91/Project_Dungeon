@@ -71,7 +71,7 @@ class PhysChunk:
                     if random.randint(0,10) == 0: #BLOCK
                         tileInfo = TileInfo("#", True, "", "NONE_ROOF", "NONE_WALLS", "NONE_WALLS", th.TileHandler())
                         self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
-                    elif random.randint(0,21) == 0: #DOOR
+                    elif random.randint(0,10) == 0: #DOOR
                         pos2 = iso.worldToScreen(pos)
                         drawTile = iso.IsometricTile(0, pos2.x, pos2.y, game.Game, "OPEN_DOOR", "", "", "")
                         tileInfo = TileInfo("#", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile))
