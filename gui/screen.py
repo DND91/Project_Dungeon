@@ -170,7 +170,7 @@ class PlayScreen(Screen):
             bodies = self.playGui.physWorld.getBodiesInBody(n_rect)
             if 0 < len(bodies):
                 for b in bodies:
-                    print("BODIES FOUND!")
+                    b.owner.mouseClick(game)
                     #INTERACTION HOOK, PLAYER MOUSE VS BODY
             else:
                 tiles = self.playGui.physWorld.getTilesInBody(n_rect)

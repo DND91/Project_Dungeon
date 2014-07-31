@@ -37,8 +37,25 @@ class ItemClass:
 class AmuletClass(ItemClass):
     def __init__(self, name, cost, parts):
         super().__init__(name, cost, parts)
+    
+    def makeName(self, stack):
+        if stack.info["Base"] == None:
+            stack.name = self.name
+        else:
+            stack.name = stack.info["Base"].name + " " + self.name
 
-
+class CapeClass(ItemClass):
+    def __init__(self, name, cost, parts):
+        super().__init__(name, cost, parts)
+    
+    def makeName(self, stack):
+        if stack.info["Cloth"] == None:
+            stack.name = self.name
+        else:
+            stack.name = stack.info["Cloth"].name + " " + self.name
+        
+        if not (stack.info["Hood"] == None):
+            stack.name = stack.name + " With " + stack.info["Hood"].name + " Hood"
 
 class ItemClasses:
     
@@ -46,7 +63,7 @@ class ItemClasses:
     #helmet = ItemClass("Helmet", 1, ["Decor", "Side", "Side", "Top"])
     amulet = AmuletClass("Amulet", 0, ["Decor", "Base", "Chain", "Lock"])
     #shoulders = ItemClass("Shoulders", 1, ["Decor", "Padding"])
-    #cape = ItemClass("Cape", 4, ["Decor", "Hang", "Cloth", "Bottom"])
+    cape = CapeClass("Cape", 4, ["Decor", "Hood", "Cloth", "Bottom"])
     #chest = ItemClass("Chest", 4, ["Decor", "Front", "Back", "Stomach"])
     #belt = ItemClass("Belt", 0, ["Decor", "Strap", "Buckel"])
     #legs = ItemClass("Legs", 2, ["Decor", "Front", "Back"])

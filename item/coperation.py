@@ -20,11 +20,17 @@ class ChaosCoperation(TheNeutralCoperation):
     def __init__(self):
         self.name = "Chaos"
         coperations.append(self)
+    
+    def setupStack(self, stack):
+        stack.name = self.name + " " + stack.name
 
 class ElvenStoneCoperation(TheNeutralCoperation):
     def __init__(self):
         self.name = "Elven Stone"
         coperations.append(self)
+    
+    def setupStack(self, stack):
+        stack.name = stack.name + " Of " + self.name
 
 
 

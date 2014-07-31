@@ -12,6 +12,8 @@ class Entity:
         self.rectangle = self.body.rectangle
         self.speed = 0
         self.world = world
+        self.moviable = True
+        self.solid = True
     
     def velocity(self, dx, dy):
         self.body.velocity.x = dx
@@ -44,6 +46,9 @@ class Entity:
     
     def draw(self, ps, game):
         x = 0
+    
+    def mouseClick(self, game):
+        print("BODIES FOUND!")
 
 class SolidEntity(Entity):
     name = "SOLIDENTITY"
@@ -54,6 +59,7 @@ class SolidEntity(Entity):
         self.sprite = sf.Sprite(texture)
         self.sprite.position = self.body.rectangle.position
         self.body.mass = 1000
+        self.moviable = False
     
     def draw(self, ps, game):
         if ps == 1:
