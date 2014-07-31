@@ -7,10 +7,11 @@ from world.cool_phys import *
 class Entity:
     name = "ENTITY"
     
-    def __init__(self, x, y, width, height):
+    def __init__(self, world, x, y, width, height):
         self.body = PhysBody(self, x, y, width, height)
         self.rectangle = self.body.rectangle
         self.speed = 0
+        self.world = world
     
     def velocity(self, dx, dy):
         self.body.velocity.x = dx
@@ -47,8 +48,8 @@ class Entity:
 class SolidEntity(Entity):
     name = "SOLIDENTITY"
     
-    def __init__(self, x, y, game):
-        super().__init__(x,y, 64,64)
+    def __init__(self, world, x, y, game):
+        super().__init__(world, x, y, 64,64)
         texture = game.textures.fetch("SOLID")
         self.sprite = sf.Sprite(texture)
         self.sprite.position = self.body.rectangle.position
@@ -63,8 +64,8 @@ class SolidEntity(Entity):
 class BallEntity(Entity):
     name = "BALLENTITY"
     
-    def __init__(self, x, y, game):
-        super().__init__(x,y, 64,64)
+    def __init__(self, world, x, y, game):
+        super().__init__(world, x, y, 64,64)
         texture = game.textures.fetch("BALL")
         self.sprite = sf.Sprite(texture)
         self.sprite.position = self.body.rectangle.position
@@ -80,8 +81,8 @@ class BallEntity(Entity):
 class PlayerEntity(Entity):
     name = "PLAYERENTITY"
     
-    def __init__(self, x, y, game):
-        super().__init__(x,y, 64,64)
+    def __init__(self, world, x, y, game):
+        super().__init__(world, x, y, 64,64)
         texture = game.textures.fetch("PLAYER")
         self.sprite = sf.Sprite(texture)
         self.sprite.position = self.body.rectangle.position

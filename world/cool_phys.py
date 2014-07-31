@@ -137,6 +137,7 @@ class PhysWorld:
         self.calculateChunks(body)
     
     def removeBody(self, body):
+        self.removeFromChunks(body)
         self.bodies.discard(body)
     
     def removeFromChunks(self, body):
@@ -273,6 +274,7 @@ class PhysWorld:
                             light.rectangle.__init__((l, t), (w, h))
                             #Add Collision Hook For Entities, Body Vs Body
                             print("BODY COLLISTION WITH BODY!")
+                            #light.owner.world.addRemoval(light.owner)
     
     
     def update(self, delta):

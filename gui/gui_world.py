@@ -8,6 +8,7 @@ from world.cool_phys import *
 import functools
 import bisect
 import random
+from collections import deque
 
 def find_fwd_iter(S, i):
     j = bisect.bisect_left(S, i)
@@ -28,6 +29,9 @@ class GuiWorld(GuiObject):
         self.border = 3
         border = self.border
         width = 1.0
+        
+        self.remove_queue = deque()
+        
         super().__init__(border,border, game.Game.window.size.x-2*border, game.Game.window.size.y*width-2*border)
         self.frame = sf.RectangleShape()
         self.frame.size = (game.Game.window.size.x-2*border, game.Game.window.size.y*width-2*border)
@@ -57,9 +61,8 @@ class GuiWorld(GuiObject):
         #        self.enteties.append(entity.SolidEntity(worldPos.x*16,worldPos.y*16, game.Game))
         
         #PLAYER
-        self.player = entity.PlayerEntity(1*64+5,1*64+5, game.Game)
-        self.enteties.append(self.player)
-        self.physWorld.addBody(self.player.body)
+        self.player = entity.PlayerEntity(self, 1*64+5,1*64+5, game.Game)
+        self.addEntity(self.player)
         game.Game.player = self.player
         
         #OBJECTS
@@ -67,13 +70,11 @@ class GuiWorld(GuiObject):
             x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
             y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
             if random.randint(0, 5) == 0:
-                self.solid = entity.SolidEntity(x*64,y*64, game.Game)
-                self.enteties.append(self.solid)
-                self.physWorld.addBody(self.solid.body)
+                solid = entity.SolidEntity(self, x*64,y*64, game.Game)
+                self.addEntity(solid)
             else:
-                self.ball = entity.BallEntity(x*64,y*64, game.Game)
-                self.enteties.append(self.ball)
-                self.physWorld.addBody(self.ball.body)
+                ball = entity.BallEntity(self, x*64,y*64, game.Game)
+                self.addEntity(ball)
         
         
         #ZOOM
@@ -81,6 +82,17 @@ class GuiWorld(GuiObject):
         self.drawList = set()
         
         
+    
+    def addEntity(self, entity):    
+        self.enteties.append(entity)
+        self.physWorld.addBody(entity.body)
+    
+    def removeEntity(self, entity):
+        self.physWorld.removeBody(entity.body)
+        self.enteties.remove(entity)
+    
+    def addRemoval(self, entity):
+        self.remove_queue.append(entity)
     
     def fillWorld(self, tileList, world):
         y = 0
@@ -111,11 +123,16 @@ class GuiWorld(GuiObject):
         l = pos.x
         t = pos.y
         self.phys_screen.__init__((l, t), (w, h))
-        #print(self.phys_screen)
-        #for entA in self.enteties:
-         #   for entB in self.enteties:
-         #       if entA != entB and entA.intersects(entB):
-          #          entA.intersectsWith(entB)
+        
+        try:
+            while True:
+                ent = self.remove_queue.popleft()
+                self.removeEntity(ent)
+        except IndexError:
+            pass
+        except ValueError:
+            pass
+    
     
     def draw(self, pss, game):
         if pss == 0:
