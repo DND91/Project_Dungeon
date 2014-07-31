@@ -74,6 +74,44 @@ class GameMap:
 
             iterations += 1
 
+        #Below here, no generation happens!
+        #This is because the coordinates fuck up!
+
+        emptyrows = []
+        emptycols = []
+
+        for index, row in enumerate(self.grid):
+            feature = False
+            for sign in row:
+                if sign != ".":
+                    feature = True
+                    break
+            if not feature:
+                emptyrows.append(index)
+
+        for index in range(self.size[1]):
+            feature = False
+            for row in self.grid:
+                if row[index] != ".":
+                    feature = True
+                    break
+            if not feature:
+                emptycols.append(index)
+
+        emptyrows.sort(reverse = True)
+        emptycols.sort(reverse = True)
+
+        for index in emptyrows:
+            del self.grid[index]
+            self.size[0] -= 1
+
+        for row in self.grid:
+            for index in emptycols:
+                del row[index]
+
+        for index in emptycols:
+            self.size[1] -= 1
+
     def compute_feature_size(self, orientation, coord):
         x = 0
         y = 0
@@ -159,6 +197,11 @@ class GameMap:
         if len(valid) == 1:
             return valid[0]
         else:
+            if ((("S" in valid and "N" in valid) or
+                 ("W" in valid and "E" in valid)) and
+                len(valid) == 2):
+                if randint(1, 100) < 10:
+                    self.grid[coord[0]][coord[1]] = "D"
             return None
 
     def fit_feature(self, feature, featurestart, orientation):
@@ -172,6 +215,9 @@ class GameMap:
 
         print("ACTUAL FEATURE SIZE IS:")
         print(size)
+        if size[0] < 4 or size[1] < 4:
+            print("THIS ROOM IS TOO SMALL")
+            return False
 
         if orientation in "EW":
             if orientation == "W":
@@ -350,6 +396,37 @@ class GameMap:
                             self.walls.discard((y, xcurr))
                 xcurr += 1
             y += 1
+
+        #Doors are generated below
+
+        if orientation != "start":
+
+            self.grid[featurestart[0]][featurestart[1]] = "D"
+
+            direction = None
+            if orientation in "SE":
+                direction = 1
+            else:
+                direction = -1
+
+            if orientation in "NS":
+                check = featurestart[0] + direction
+                while self.grid[check][featurestart[1]] != " ":
+                    for i in [1, -1]:
+                        if self.grid[check][featurestart[1] + i] != " ":
+                            self.grid[check][featurestart[1] + i] = "#"
+                    self.grid[check][featurestart[1]] = " "
+                    check += direction
+            else:
+                check = featurestart[1] + direction
+                while self.grid[featurestart[0]][check] != " ":
+                    for i in [1, -1]:
+                        if self.grid[featurestart[0] + i][check] != " ":
+                            self.grid[featurestart[0] + i][check] = "#"
+                    self.grid[featurestart[0]][check] = " "
+                    check += direction
+            
+        
 
         return True
 
