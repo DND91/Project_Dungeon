@@ -3,6 +3,8 @@ from gui.screen import *
 import sfml as sf
 from database.texture_database import *
 
+
+
 class Game:
     running = True
     pause = False
