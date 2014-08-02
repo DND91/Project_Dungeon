@@ -63,14 +63,29 @@ class GuiWorld(GuiObject):
         #        self.enteties.append(entity.SolidEntity(worldPos.x*16,worldPos.y*16, game.Game))
         
         #PLAYER
-        self.player = entity.PlayerEntity(self, 1*64+5,1*64+5, game.Game)
+        for r in range(100000):
+            x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+            y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+            tile = self.physWorld.getTile(x, y)
+            if not (tile == 0) and not (tile.info.solid):
+                break
+        
+        self.player = entity.PlayerEntity(self, x*64+5,y*64+5, game.Game)
         self.addEntity(self.player)
         game.Game.player = self.player
         
         #OBJECTS
         for t in range(50):
-            x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
-            y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+            x = 0
+            y = 0
+            
+            for r in range(100000):
+                x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+                y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+                tile = self.physWorld.getTile(x, y)
+                if not (tile == 0) and not (tile.info.solid):
+                    break
+            
             if random.randint(0, 5) == 0:
                 solid = entity.SolidEntity(self, x*64,y*64, game.Game)
                 self.addEntity(solid)
