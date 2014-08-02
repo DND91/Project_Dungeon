@@ -249,7 +249,7 @@ class PhysWorld:
                                     else:
                                         t += g.y
                                     body.rectangle.__init__((l, t), (w, h))
-                                    print("TILE COLLISTION WITH BODY!")
+                                    #print("TILE COLLISTION WITH BODY!")
                                 #Add Collision Hook For Tiles, Ent Vs Tile
                                 tile.drawTile.active = True #FIX! It is activating draw, but not handler
     
@@ -260,20 +260,21 @@ class PhysWorld:
                     #Body collistion
                     for otherBody in self.chunks[chunk.y][chunk.x].bodies:
                         if not (body == otherBody) and intersects(body, otherBody):
-                            light = body
-                            heavy = otherBody
-                            if heavy.mass < light.mass:
-                                light = otherBody
-                                heavy = body
-                            g = gap(heavy, light)
-                            l, t, w, h = light.rectangle
-                            if math.fabs(g.x) <= math.fabs(g.y):
-                                l += g.x
-                            else:
-                                t += g.y
-                            light.rectangle.__init__((l, t), (w, h))
+                            if  body.owner.solid and otherBody.owner.solid:
+                                light = body
+                                heavy = otherBody
+                                if heavy.mass < light.mass and heavy.owner.moviable:
+                                    light = otherBody
+                                    heavy = body
+                                g = gap(heavy, light)
+                                l, t, w, h = light.rectangle
+                                if math.fabs(g.x) <= math.fabs(g.y):
+                                    l += g.x
+                                else:
+                                    t += g.y
+                                light.rectangle.__init__((l, t), (w, h))
                             #Add Collision Hook For Entities, Body Vs Body
-                            print("BODY COLLISTION WITH BODY!")
+                            #print("BODY COLLISTION WITH BODY!")
                             #light.owner.world.addRemoval(light.owner)
     
     

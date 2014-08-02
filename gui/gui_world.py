@@ -3,12 +3,14 @@ import game
 import sfml as sf
 from gui.gui_object import *
 import entity.entity as entity
+import entity.entity_item as ientity
 from world.isometric_tile import *
 from world.cool_phys import *
 import functools
 import bisect
 import random
 from collections import deque
+import item.generator as igen
 
 def find_fwd_iter(S, i):
     j = bisect.bisect_left(S, i)
@@ -72,6 +74,9 @@ class GuiWorld(GuiObject):
             if random.randint(0, 5) == 0:
                 solid = entity.SolidEntity(self, x*64,y*64, game.Game)
                 self.addEntity(solid)
+            if random.randint(0, 5) == 0:
+                ie = ientity.ItemEntity(self, x*64,y*64, game.Game, igen.generateItemStack(50, 1))
+                self.addEntity(ie)
             else:
                 ball = entity.BallEntity(self, x*64,y*64, game.Game)
                 self.addEntity(ball)

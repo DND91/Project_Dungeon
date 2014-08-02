@@ -135,10 +135,6 @@ class PlayScreen(Screen):
         self.gui_list = []
         self.lastScreen = lastScreen
         
-        self.playGui = GuiWorld()
-        self.gui_list.append(self.playGui)
-        game.window.view = sf.View(sf.Rectangle((0, 0), (game.window.width, game.window.height)))
-        
         self.title = GuiText(10,10, "PLAY")
         self.title.text.character_size = 32
         self.title.text.style = sf.Text.BOLD
@@ -146,6 +142,10 @@ class PlayScreen(Screen):
         
         self.backButton = GuiButton(10, 50, "Back")
         self.gui_list.append(self.backButton)
+        
+        self.playGui = GuiWorld()
+        self.gui_list.append(self.playGui)
+        game.window.view = sf.View(sf.Rectangle((0, 0), (game.window.width, game.window.height)))
         
     
     def update(self, game, delta):
@@ -170,16 +170,24 @@ class PlayScreen(Screen):
             bodies = self.playGui.physWorld.getBodiesInBody(n_rect)
             if 0 < len(bodies):
                 for b in bodies:
-                    print("BODIES FOUND!")
+                    b.owner.mouseClick(game)
                     #INTERACTION HOOK, PLAYER MOUSE VS BODY
             else:
                 tiles = self.playGui.physWorld.getTilesInBody(n_rect)
                 for t in tiles: #Change to only one
                     t.tileHandler.mouseClick(game, object, rect)
                     #INTERACTION HOOK, PLAYER MOUSE VS TILE
-            
-            
-            
+    
+    def update(self, game, delta):
+        for object in reversed(self.gui_list):
+            object.update(game, delta)
+    
+    def draw(self, ps, game):
+        for object in reversed(self.gui_list):
+            object.draw(ps, game)
+    
+    
+    
 
 
 
