@@ -9,8 +9,6 @@ class ItemStack:
         self.amount = amount
         self.info = dict()
         self.cost = 0
-        for part in itemC.parts:
-            self.info[part] = None
     
     def __str__(self):
         return "ItemStack." + self.itemC.name + "(" + self.name + ", amount " + str(self.amount) + ", cost " + str(self.cost) + ", " + self.info.__str__()
@@ -20,3 +18,13 @@ class ItemStack:
     
     def description(self):
         return self.itemC.description(self)
+    
+    def getInfo(self, tag):
+        return self.info[tag]
+    
+    def setInfo(self, tag, data):
+        self.info[tag] = data
+    
+    def hasTag(self, tag):
+        return tag in self.info
+    

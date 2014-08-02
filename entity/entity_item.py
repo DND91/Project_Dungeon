@@ -18,6 +18,10 @@ class ItemEntity(entity.Entity):
         self.solid = False
         self.stack = stack
     
+    def update(self, game, delta):
+        super().update(game, delta)
+        self.stack.itemC.onGround(self.stack, self)
+    
     def draw(self, ps, game):
         if ps == 1:
             tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left+64, self.body.rectangle.top+64))
