@@ -150,9 +150,6 @@ class PhysWorld:
         tileY = y % PhysChunk.chunkSize
         chunkX = min(chunkX, PhysChunk.chunkSize - 1)
         chunkY = min(chunkY, PhysChunk.chunkSize - 1)
-        print("Y", y, "X", x)
-        print("CHUNK", chunkY, chunkX)
-        print("TILE", tileY, tileX)
         
         return self.chunks[chunkY][chunkX].tiles[tileY][tileX]
     
