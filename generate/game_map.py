@@ -77,50 +77,44 @@ class GameMap:
 
             iterations += 1
 
-        # Below here, no generation happens.
-        # This is because the coordinates become unusable.
+        # The code below computes abstract paths between the rooms of the map.
+        for key, room in self.rooms.items():
+            # Store the keys to all other rooms.
+            keys = [k for k in self.rooms]
+            for k in keys:
+                path = self.compute_abstract_path(key, k)
+                if path is None:
+                    print("No paths are possible between these rooms!")
+                room.add_path(k, AbstractPath(path, len(path) - 1))
+                
+                
 
-        # The code below removes any leading and trailing empty rows and columns
-        # from the grid.
+    def compute_abstract_path(self, src, dst, visited = []):
+        visited.append(src)
         
-        #This return shall be removed when PhysWorld
-        #can handle map sizes that don't fit to chunks
-        return
-        
-        emptyrows = []
-        emptycols = []
+        if src == dst:
+            return visited
+        else:
+            possible = [c for c in self.rooms[src].get_connects() if
+                        c not in visited]
+            if len(possible) > 0:
+                for p in possible:
+                    paths = []
+                    path = self.compute_abstract_path(p, dst, visited)
 
-        for index, row in enumerate(self.grid):
-            feature = False
-            for sign in row:
-                if sign != ".":
-                    feature = True
-                    break
-            if not feature:
-                emptyrows.append(index)
+                    if path is not None:
+                        paths.append(path)
 
-        for index in range(self.size[1]):
-            feature = False
-            for row in self.grid:
-                if row[index] != ".":
-                    feature = True
-                    break
-            if not feature:
-                emptycols.append(index)
+                    if len(paths) > 0:
+                        return min(paths)
+                    else:
+                        return None
+            else:
+                return None
 
-        emptyrows.sort(reverse = True)
-        emptycols.sort(reverse = True)
-
-        for index in emptyrows:
-            del self.grid[index]
-            self.size[0] -= 1
-
-        for row in self.grid:
-            for index in emptycols:
-                del row[index]
-
-        for index in emptycols:
-            self.size[1] -= 1
+                
+                    
+                
 
     def compute_feature_size(self, orientation, coord):
         # This function determines the maximum size of a feature to be 
