@@ -19,7 +19,7 @@ class GameMap:
                 self.grid[row].append(".")
 
         # Generate the map.
-+
+
         self.generate()
 
     def generate(self):
@@ -34,7 +34,7 @@ class GameMap:
             roomstart = (randrange(1, self.size[0] - 2), 
                          randrange(1, self.size[1] - 2))
             room = MapFeature(randrange(5, 21), randrange(5, 21))
-            if self.fit_feature(room, roomstart, "start", roomcount):
+            if self.fit_feature(room, roomstart, "start", room_key):
                 # Once a room has been succesfully generated, break loop.
                 room_key += 1
                 break
@@ -61,7 +61,7 @@ class GameMap:
                                       randint(4, maxsize[1]), 
                                       orientation)
 
-                    if self.fit_feature(room, testcoord, orientation, roomcount):
+                    if self.fit_feature(room, testcoord, orientation, room_key):
                         # If the feature fits, this is a succesful iteration.
                         # As such, we reset the counter.
                         room_key += 1

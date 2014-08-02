@@ -131,7 +131,6 @@ class PhysWorld:
         mapSize = self.worldSize * PhysChunk.chunkSize
         gameMap = gmap.GameMap(mapSize, mapSize)
         
-        
         #Chunk Generation
         for y in range(self.worldSize):
             self.chunks.append([])
