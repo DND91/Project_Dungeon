@@ -1,5 +1,6 @@
 from random import *
 from generate.map_feature import *
+from generate.abstract_room import *
 
 
 class GameMap:
@@ -8,6 +9,7 @@ class GameMap:
         self.size = [y, x]
         self.grid = []
         self.walls = set()
+        self.rooms = {}
 
         # Fill the entire map with rock.
 
@@ -17,19 +19,24 @@ class GameMap:
                 self.grid[row].append(".")
 
         # Generate the map.
-
++
         self.generate()
 
     def generate(self):
         # This function generates the grid.
+
+        # Initialize the room count, used as keys to certain rooms in the
+        # abstract map.
+        room_key = 0
 
         # Generate the first room in a random spot.
         while True:
             roomstart = (randrange(1, self.size[0] - 2), 
                          randrange(1, self.size[1] - 2))
             room = MapFeature(randrange(5, 21), randrange(5, 21))
-            if self.fit_feature(room, roomstart, "start"):
+            if self.fit_feature(room, roomstart, "start", roomcount):
                 # Once a room has been succesfully generated, break loop.
+                room_key += 1
                 break
 
         # Make a counter. It's supposed to count failed iterations.
@@ -54,9 +61,10 @@ class GameMap:
                                       randint(4, maxsize[1]), 
                                       orientation)
 
-                    if self.fit_feature(room, testcoord, orientation):
+                    if self.fit_feature(room, testcoord, orientation, roomcount):
                         # If the feature fits, this is a succesful iteration.
                         # As such, we reset the counter.
+                        room_key += 1
                         iterations = 0
 
                 else:
@@ -229,7 +237,7 @@ class GameMap:
                     self.grid[coord[0]][coord[1]] = "D"
             return None
 
-    def fit_feature(self, feature, featurestart, orientation):
+    def fit_feature(self, feature, featurestart, orientation, key):
         # This function attempts to fit a feature in some kind of location.
 
         x = None
@@ -381,7 +389,11 @@ class GameMap:
                 test_x += 1
             test_y += 1
 
-        # If we get here, the feature fits. As such, we place it.
+        # If we get here, the feature fits.
+
+        # We generate an abstract room.
+        self.rooms[key] = AbstractRoom()
+            
         for row in featuregrid:
             xcurr = x
             for sign in row:
@@ -393,6 +405,9 @@ class GameMap:
                     if sign == "#":
                         # All new walls are added to the set.
                         self.walls.add((y, xcurr))
+                    else:
+                        self.rooms[key].add_coord(y, xcurr)
+                        
 
                 xcurr += 1
             y += 1
@@ -405,6 +420,7 @@ class GameMap:
 
             # When we have placed a door, we make a corridor that connects it
             # to the feature. This is to avoid doors leading to rock tiles.
+            # finally, we connect the rooms on the abstract map.
             direction = None
             if orientation in "SE":
                 direction = 1
@@ -419,6 +435,13 @@ class GameMap:
                             self.grid[check][featurestart[1] + i] = "#"
                     self.grid[check][featurestart[1]] = " "
                     check += direction
+
+                for poskey, room in self.rooms.items():
+                    if room.contains(featurestart[0] - direction,
+                                     featurestart[1]):
+                        room.connect(key)
+                        self.rooms[key].connect(poskey)
+                        break
             else:
                 check = featurestart[1] + direction
                 while self.grid[featurestart[0]][check] != " ":
@@ -427,9 +450,24 @@ class GameMap:
                             self.grid[featurestart[0] + i][check] = "#"
                     self.grid[featurestart[0]][check] = " "
                     check += direction
+
+                for poskey, room in self.rooms.items():
+                    if room.contains(featurestart[0],
+                                     featurestart[1] - direction):
+                        room.connect(key)
+                        self.rooms[key].connect(poskey)
+                        break
             
         # If we get here without errors, we return true.
         return True
+
+    def display_abstract_map(self):
+        # This function outputs the abstract map into a terminal.
+        for key, room in self.rooms.items():
+            print("ROOM KEY: " + str(key))
+            print("    CONNECTED TO:")
+            for item in room.get_connects():
+                print("        " + str(item))
 
     def output(self, filename):
         # This function outputs the grid to a text file.
