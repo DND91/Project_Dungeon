@@ -74,7 +74,11 @@ class GameMap:
 
         # The code below removes any leading and trailing empty rows and columns
         # from the grid.
-
+        
+        #This return shall be removed when PhysWorld
+        #can handle map sizes that don't fit to chunks
+        return
+        
         emptyrows = []
         emptycols = []
 
