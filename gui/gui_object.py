@@ -31,3 +31,6 @@ class GuiObject:
     
     def mouseClick(self, game, screen, rect):
         return True
+    
+    def keyClick(self, game, screen, code):
+        x = 0
