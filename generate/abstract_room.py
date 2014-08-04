@@ -1,5 +1,5 @@
 class AbstractRoom:
-
+    
     def __init__(self):
         self.coords = []
         self.connects = []
@@ -40,11 +40,11 @@ class AbstractRoom:
         return self.paths[dst].get_length()
 
     def setup_room_properties(self):
-        
+        x = 0
 
 class AbstractPath:
-
-    def __init__(length, path):
+    
+    def __init__(self, length, path):
         self.length = length
         self.path = path
 

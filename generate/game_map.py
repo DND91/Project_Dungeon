@@ -85,6 +85,7 @@ class GameMap:
                 path = self.compute_abstract_path(key, k)
                 if path is None:
                     print("No paths are possible between these rooms!")
+                    break
                 room.add_path(k, AbstractPath(path, len(path) - 1))
                 
                 

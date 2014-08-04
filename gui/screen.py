@@ -18,7 +18,8 @@ class Screen:
                 rect = sf.Rectangle(event.position, sf.Vector2(4, 4))
                 for object in self.gui_list:
                     if object.collision(rect):
-                        self.mouseClick(game, object, rect)
+                        if object.mouseClick(game, self, rect):
+                            self.mouseClick(game, object, rect)
                         break
         
     

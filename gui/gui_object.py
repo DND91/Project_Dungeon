@@ -28,3 +28,6 @@ class GuiObject:
     
     def draw(self, ps, game):
         x = 0
+    
+    def mouseClick(self, game, screen, rect):
+        return True
