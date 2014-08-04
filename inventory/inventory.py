@@ -20,7 +20,6 @@ class Inventory:
         if (coord[0] + size[0] > self.size[0] or
             coord[1] + size[1] > self.size[1]):
             
-            print("out of bounds")
             return True
 
         return False
@@ -31,7 +30,6 @@ class Inventory:
             for x in range(coord[1], coord[1] + size[1]):
 
                 if self.get_item(self.matrix[y][x]) is not None:
-                    print("does not fit")
                     return False
         
         return True
