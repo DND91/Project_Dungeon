@@ -2,7 +2,6 @@
 
 class ItemStack:
     
-    
     def __init__(self, itemC, amount):
         self.name = "Item"
         self.itemC = itemC
