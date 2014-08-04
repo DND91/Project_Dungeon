@@ -6,25 +6,48 @@ from gui.gui_toys import *
 from gui.gui_world import *
 import world.isometric_tile as iso
 import world.cool_phys as world
+import gui.gui_screen as gscr
+
+import gui.gui_test_screen as gtscr
 
 class Screen:
     def __init__(self):
         self.name = "SCREEN"
         self.gui_list = []
+        self.gui_screen = None
     
     def event(self, game, event):
         if type(event) is sf.MouseButtonEvent: #Better aiming with mouse click...
             if event.button == sf.Mouse.LEFT and event.released:
                 rect = sf.Rectangle(event.position, sf.Vector2(4, 4))
+                if not (self.gui_screen == None):
+                    if self.gui_screen.collision(rect) and not self.gui_screen.mouseClick(game, self, rect):
+                        return
                 for object in self.gui_list:
                     if object.collision(rect):
                         if object.mouseClick(game, self, rect):
                             self.mouseClick(game, object, rect)
                         break
+        if type(event) is sf.KeyEvent:
+            if event.released:
+                if event.code == sf.Keyboard.ESCAPE:
+                    if not (self.gui_screen == None):
+                        self.gui_screen = None
+                else:
+                    if not (self.gui_screen == None):
+                        if not self.gui_screen.keyClick(game, event.code):
+                            return
+                    if self.keyClick(game, event.code):
+                        for object in self.gui_list:
+                            object.keyClick(game, self, event.code)
         
     
     def mouseClick(self, game, object, rect):
-        print(object)
+        x = 0
+    
+    def keyClick(self, game, code):
+        x = 0
+        return True
     
     def update(self, game, delta):
         for object in self.gui_list:
@@ -40,6 +63,7 @@ class IntroScreen(Screen):
     def __init__(self):
         self.name = "INTRO"
         self.gui_list = []
+        self.gui_screen = None
         title = GuiText(10,10, "PROJECT: DUNG!")
         title.text.character_size = 120
         title.text.style = sf.Text.BOLD
@@ -64,6 +88,7 @@ class MainMenuScreen(Screen):
     def __init__(self):
         self.name = "MAIN_MENU"
         self.gui_list = []
+        self.gui_screen = None
         title = GuiText(10,10, "PROJECT: DUNG!")
         title.text.character_size = 32
         title.text.style = sf.Text.BOLD
@@ -97,6 +122,7 @@ class OptionScreen(Screen):
     def __init__(self, lastScreen):
         self.name = "OPTIONS"
         self.gui_list = []
+        self.gui_screen = None
         self.lastScreen = lastScreen
         title = GuiText(10,10, "OPTIONS")
         title.text.character_size = 32
@@ -116,6 +142,7 @@ class HelpScreen(Screen):
     def __init__(self, lastScreen):
         self.name = "HELP"
         self.gui_list = []
+        self.gui_screen = None
         self.lastScreen = lastScreen
         title = GuiText(10,10, "HELP")
         title.text.character_size = 32
@@ -134,6 +161,7 @@ class PlayScreen(Screen):
     def __init__(self, game, lastScreen):
         self.name = "PLAY"
         self.gui_list = []
+        self.gui_screen = None
         self.lastScreen = lastScreen
         
         self.title = GuiText(10,10, "PLAY")
@@ -182,10 +210,23 @@ class PlayScreen(Screen):
     def update(self, game, delta):
         for object in reversed(self.gui_list):
             object.update(game, delta)
+        if not (self.gui_screen == None):
+                self.gui_screen.update(game, delta)
     
     def draw(self, ps, game):
         for object in reversed(self.gui_list):
             object.draw(ps, game)
+        if not (self.gui_screen == None):
+                self.gui_screen.draw(ps, game)
+    
+    def keyClick(self, game, code):
+        if code == sf.Keyboard.E:
+            if not (self.gui_screen == None):
+                self.gui_screen = None
+            else: #PLACE FOR INVENTORY SCREEN
+                self.gui_screen = gtscr.GuiTestScreen()
+            return False
+        return True
     
     
     
