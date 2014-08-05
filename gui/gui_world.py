@@ -29,7 +29,9 @@ class GuiWorld(GuiObject):
     frame_color = sf.Color(160, 160, 160)
     
     def __init__(self):
-        self.physWorld = PhysWorld()
+        self.nextWorld = None
+        self.goHome = False
+        self.physWorld = PhysWorld(2, "tavern")
         self.border = 3
         border = self.border
         width = 1.0
@@ -67,25 +69,17 @@ class GuiWorld(GuiObject):
         #        self.enteties.append(entity.SolidEntity(worldPos.x*16,worldPos.y*16, game.Game))
         
         #PLAYER
-        for r in range(100000):
-            x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
-            y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
-            tile = self.physWorld.getTile(x, y)
-            if not (tile == 0) and not (tile.info.solid):
-                break
-        
-        self.player = entity.PlayerEntity(self, x*64+5,y*64+5, game.Game)
-        self.addEntity(self.player)
-        game.Game.player = self.player
+        self.initPlayer()
         
         #OBJECTS
-        for t in range(50):
+        for t in range(5):
+            continue
             x = 0
             y = 0
             
-            for r in range(100000):
-                x = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
-                y = random.randint(1, PhysWorld.worldSize * PhysChunk.chunkSize)
+            for r in range(10):
+                x = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
+                y = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
                 tile = self.physWorld.getTile(x, y)
                 if not (tile == 0) and not (tile.info.solid):
                     break
@@ -106,6 +100,19 @@ class GuiWorld(GuiObject):
         self.drawList = set()
         
         
+    
+    def initPlayer(self):
+        for r in range(10):
+            x = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
+            y = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
+            tile = self.physWorld.getTile(x, y)
+            if not (tile == 0) and not (tile.info.solid):
+                break
+        
+        self.player = entity.PlayerEntity(self, x*64+5,y*64+5, game.Game)
+        self.addEntity(self.player)
+        game.Game.player = self.player
+    
     
     def addEntity(self, entity):    
         self.enteties.append(entity)
@@ -136,6 +143,20 @@ class GuiWorld(GuiObject):
     #    return False
     
     def update(self, game, delta):
+        if self.goHome:
+            self.nextWorld = PhysWorld(2, "tavern")
+            self.goHome = False
+        if not (self.nextWorld == None): #CHANGE WORLD
+            game.current.gui_screen = None
+            for ent in self.enteties:
+                self.physWorld.removeBody(ent.body)
+            self.enteties.clear()
+            self.physWorld = self.nextWorld
+            
+            self.initPlayer()
+            
+            self.nextWorld = None
+        
         for entity in self.enteties:
             entity.update(game, delta)
         self.physWorld.update(delta)
