@@ -88,12 +88,12 @@ class PhysChunk:
                 elif char == "P": #WORLD PORTAL
                     pos2 = iso.worldToScreen(pos)
                     gui = gtp.GuiTavernPortal()
-                    gui.world1 = PhysWorld(2)
-                    gui.world2 = PhysWorld(2)
-                    gui.world3 = PhysWorld(2)
+                    gui.world1 = PhysWorld(random.randint(2,4))
+                    gui.world2 = PhysWorld(random.randint(2,4))
+                    gui.world3 = PhysWorld(random.randint(2,4))
                     
                     oth = th.OpenGUIScreenTile(gui)
-                    tileInfo = TileInfo("P", True, "PORTAL", "", "", "", oth)
+                    tileInfo = TileInfo("P", True, "", "PORTAL", "", "", oth)
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 elif char == "H": #HOME PORTAL
                     pos2 = iso.worldToScreen(pos)
@@ -101,7 +101,7 @@ class PhysChunk:
                     #gui.home = PhysWorld(2, "tavern")
                     
                     oth = th.OpenGUIScreenTile(gui)
-                    tileInfo = TileInfo("P", True, "PORTAL", "", "", "", oth)
+                    tileInfo = TileInfo("P", True, "", "PORTAL", "", "", oth)
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 elif char == " ": #EMPTY
                     tileInfo = TileInfo(" ", False, "NONE_FLOOR", "", "", "", th.TileHandler())
