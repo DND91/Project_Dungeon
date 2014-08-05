@@ -10,6 +10,9 @@ import world.tile_handler as th
 import generate.game_map as gmap
 
 import gui.gui_tavern_portal as gtp
+import gui.gui_home_portal as ghp
+
+
 
 class PhysBody:
     
@@ -82,10 +85,24 @@ class PhysChunk:
                     drawTile = iso.IsometricTile(0, pos2.x, pos2.y, game.Game, "OPEN_DOOR", "", "", "")
                     tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile))
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                elif char == "P": #WORLD PORTAL
+                    pos2 = iso.worldToScreen(pos)
+                    gui = gtp.GuiTavernPortal()
+                    gui.world1 = PhysWorld(2)
+                    gui.world2 = PhysWorld(2)
+                    gui.world3 = PhysWorld(2)
                     
-                    #oth = th.OpenGUIScreenTile(gtp.GuiTavernPortal)
-                    #tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", oth)
-                    #self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                    oth = th.OpenGUIScreenTile(gui)
+                    tileInfo = TileInfo("P", True, "PORTAL", "", "", "", oth)
+                    self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                elif char == "H": #HOME PORTAL
+                    pos2 = iso.worldToScreen(pos)
+                    gui = ghp.GuiHomePortal()
+                    #gui.home = PhysWorld(2, "tavern")
+                    
+                    oth = th.OpenGUIScreenTile(gui)
+                    tileInfo = TileInfo("P", True, "PORTAL", "", "", "", oth)
+                    self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 elif char == " ": #EMPTY
                     tileInfo = TileInfo(" ", False, "NONE_FLOOR", "", "", "", th.TileHandler())
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
@@ -124,9 +141,10 @@ class PhysWorld:
     
     
     #Number of chunks in the world
-    worldSize = 8
+    #worldSize = 8
     
-    def __init__(self):
+    def __init__(self, worldSize = 8, file = "Random"):
+        self.worldSize = worldSize
         #PhysWorld Init
         size = self.worldSize * PhysChunk.chunkSize * PhysTile.tileSize
         self.rectangle = sf.Rectangle((0,0),(size,size))
@@ -136,6 +154,26 @@ class PhysWorld:
         #Map Generation
         mapSize = self.worldSize * PhysChunk.chunkSize
         gameMap = gmap.GameMap(mapSize, mapSize)
+        
+        if file == "Random":
+            gameMap.generate()
+            
+            #INIT HOME PORTAL
+            con = False
+            for y in range(mapSize):
+                for x in range(mapSize):
+                    char = gameMap.grid[y][x]
+                    if char == " ":
+                        gameMap.grid[y][x] = "H"
+                        con = True
+                        break
+                if con:
+                    break
+            
+            #ADD FEATURES AND SO ON... THEMES AND AWESOME COOKIES
+        else:
+            file = ".\\maps\\" + file + ".txt"
+            gameMap.readFromFile(file)
         
         #Chunk Generation
         for y in range(self.worldSize):
@@ -149,13 +187,12 @@ class PhysWorld:
     
     #Want Tile x and y position in map
     def getTile(self, x, y):
-        chunkX = math.floor(x / PhysChunk.chunkSize)
-        chunkY = math.floor(y / PhysChunk.chunkSize)
+        chunkX = math.floor(x / self.worldSize)
+        chunkY = math.floor(y / self.worldSize)
         tileX = x % PhysChunk.chunkSize
         tileY = y % PhysChunk.chunkSize
-        chunkX = min(chunkX, PhysChunk.chunkSize - 1)
-        chunkY = min(chunkY, PhysChunk.chunkSize - 1)
-        
+        chunkX = min(chunkX, self.worldSize - 1)
+        chunkY = min(chunkY, self.worldSize - 1)
         return self.chunks[chunkY][chunkX].tiles[tileY][tileX]
     
     def addBody(self, body):

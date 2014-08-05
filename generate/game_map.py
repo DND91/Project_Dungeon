@@ -19,8 +19,22 @@ class GameMap:
                 self.grid[row].append(".")
 
         # Generate the map.
-
-        self.generate()
+        #self.generate()
+    
+    def readFromFile(self, file_path):
+        file = open(file_path, "r")
+        y = 0
+        for line in file:
+            x = 0
+            for char in line:
+                if char == '\n':
+                    continue
+                self.grid[y][x] = char
+                x += 1
+            y += 1
+        
+        
+        file.close()
 
     def generate(self):
         # This function generates the grid.
