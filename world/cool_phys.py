@@ -9,6 +9,8 @@ from world.cool_math import *
 import world.tile_handler as th
 import generate.game_map as gmap
 
+import gui.gui_tavern_portal as gtp
+
 class PhysBody:
     
     def __init__(self, owner, x, y, width, height):
@@ -80,6 +82,10 @@ class PhysChunk:
                     drawTile = iso.IsometricTile(0, pos2.x, pos2.y, game.Game, "OPEN_DOOR", "", "", "")
                     tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile))
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
+                    
+                    #oth = th.OpenGUIScreenTile(gtp.GuiTavernPortal)
+                    #tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", oth)
+                    #self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)
                 elif char == " ": #EMPTY
                     tileInfo = TileInfo(" ", False, "NONE_FLOOR", "", "", "", th.TileHandler())
                     self.tiles[tileY][tileX] = PhysTile(self, pos.x, pos.y, tileInfo)

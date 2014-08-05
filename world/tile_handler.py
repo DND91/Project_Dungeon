@@ -43,3 +43,33 @@ class MassReverseTile(TileHandler):
         #self.tile.drawTile.active = not self.tile.drawTile.active
         self.tile.drawTile, self.drawTile = self.drawTile, self.tile.drawTile
         self.tile.info.solid = not self.tile.info.solid
+
+class OpenGUIScreenTile(TileHandler):
+    
+    def __init__(self, gclas):
+        super().__init__()
+        self.gclas = gclas
+    
+    def setup(self, tile):
+        self.tile = tile
+    
+    def mouseClick(self, game, object, rect):
+        if game.current.gui_screen == None:
+            game.current.gui_screen = self.gclas()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
