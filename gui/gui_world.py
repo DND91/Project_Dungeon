@@ -34,6 +34,8 @@ class GuiWorld(GuiObject):
         border = self.border
         width = 1.0
         
+        
+        
         self.remove_queue = deque()
         
         super().__init__(border,border, game.Game.window.size.x-2*border, game.Game.window.size.y*width-2*border)
