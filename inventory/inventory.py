@@ -16,6 +16,9 @@ class Inventory:
     def get_item(self, key):
         return self.contents[key]
 
+    def get_key(self, y, x):
+        return self.matrix[y][x]
+
     def out_of_bounds(self, coord, size):
         if (coord[0] + size[0] > self.size[0] or
             coord[1] + size[1] > self.size[1]):
@@ -57,9 +60,8 @@ class Inventory:
         
         return max(self.contents)
 
-    def add_item(self, item, y, x):
+    def add_item(self, item, coord):
         
-        coord = (y, x)
         size = item.get_size()
 
         if not self.out_of_bounds(coord, size):
@@ -83,6 +85,33 @@ class Inventory:
                     self.matrix[y][x] = 0
 
         del self.contents[key]
+
+    def fetch(self, key):
+        item = self.get_item(key)
+        if item is not None:
+            self.remove_item(key)
+        return item
+
+    def put(self, coord, item):
+        size = item.get_size()
+
+        if self.out_of_bounds(coord, size):
+            return item
+
+        if self.add_item(item, coord):
+            return None
+        else:
+
+            for y in range(coord[0], coord[0] + size[0]):
+                for x in range(coord[1], coord[1] + size[1]):
+
+                    if self.matrix[y][x] != 0:
+        
+                        found = self.fetch(self.matrix[y][x])
+                        if self.add_item(item, coord):
+                            return found
+                        else:
+                            return item
 
     def get_coordinate(self, key):
 
@@ -114,12 +143,12 @@ class Inventory:
         for y in range(self.size[0]):
             for x in range(self.size[1]):
 
-                if self.add_item(item, y, x):
+                if self.add_item(item, (y, x)):
                     return True
                 else:
                     item.flip()
 
-                    if self.add_item(item, y, x):
+                    if self.add_item(item, (y, x)):
                         return True
 
         return False
@@ -143,3 +172,4 @@ class Inventory:
                 
             print(string)
             print(bar)
+
