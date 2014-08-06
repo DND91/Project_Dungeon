@@ -1,14 +1,16 @@
 class EquipmentSlot:
     
     def __init__(self, *types):
-        self.types = types
-        self.content = None
+        self._types = types
+        self._content = None
 
-    def valid(self, item):
+    @property
+    def content(self):
+        return self._content
 
-        if (len(item.get_slots()) == 0 or 
-            len(self.types) == 0 or
-            any(slot in item.get_slots() for slot in self.types)):
+    def _valid(self, item):
+
+        if (any(slot in item.slots for slot in self._types)):
             return True
 
         return False
@@ -20,13 +22,10 @@ class EquipmentSlot:
 
     def fill(self, item):
         # Only use this method privately or on the "Active" slot!
-        self.content = item
+        self._content = item
 
     def _clear(self):
-        self.content = None
-
-    def examine(self):
-        return self.content
+        self._content = None
 
     def fetch(self):
         item = self.content
@@ -35,7 +34,7 @@ class EquipmentSlot:
 
     def equip(self, item):
         
-        if not self.valid(item):
+        if not self._valid(item):
             return item
 
         old_equip = None
@@ -51,4 +50,4 @@ class EquipmentSlot:
         if self.empty():
             print("nothing")
         else:
-            print(self.examine().get_name())
+            print(self._content.get_name())
