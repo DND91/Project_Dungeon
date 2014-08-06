@@ -28,15 +28,11 @@ class GuiWorld(GuiObject):
     name = "WORLD"
     frame_color = sf.Color(160, 160, 160)
     
-    def __init__(self):
-        self.nextWorld = None
-        self.goHome = False
-        self.physWorld = PhysWorld(2, "tavern")
+    def __init__(self, physWorld):
+        self.physWorld = physWorld
         self.border = 3
         border = self.border
         width = 1.0
-        
-        
         
         self.remove_queue = deque()
         
@@ -60,18 +56,10 @@ class GuiWorld(GuiObject):
         #PHYS SCREEN
         mul = 4
         self.phys_screen = sf.Rectangle(screenToWorld(sf.Vector2(0, 0)), (mul * PhysChunk.pixelSize, mul * PhysChunk.pixelSize))
-        #start = screenToWorld(sf.Vector2(0,0))
-        #end = screenToWorld(sf.Vector2(game.Game.window.size.x*1, game.Game.window.size.y*1))
-        #self.rectangle.__init__(start, end-start)
-        #for x in range(10):
-        #    for y in range(10):
-        #        worldPos = worldToScreen(sf.Vector2(x, y))
-        #        self.enteties.append(entity.SolidEntity(worldPos.x*16,worldPos.y*16, game.Game))
         
-        #PLAYER
-        self.initPlayer()
         
         #OBJECTS
+        '''
         for t in range(5):
             continue
             x = 0
@@ -93,25 +81,11 @@ class GuiWorld(GuiObject):
             else:
                 ball = entity.BallEntity(self, x*64,y*64, game.Game)
                 self.addEntity(ball)
+        '''
         
-        
-        #ZOOM
-        #game.Game.window.view.zoom(10.0)
         self.drawList = set()
         
         
-    
-    def initPlayer(self):
-        for r in range(10):
-            x = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
-            y = random.randint(1, self.physWorld.worldSize * PhysChunk.chunkSize)
-            tile = self.physWorld.getTile(x, y)
-            if not (tile == 0) and not (tile.info.solid):
-                break
-        
-        self.player = entity.PlayerEntity(self, x*64+5,y*64+5, game.Game)
-        self.addEntity(self.player)
-        game.Game.player = self.player
     
     
     def addEntity(self, entity):    
@@ -143,19 +117,6 @@ class GuiWorld(GuiObject):
     #    return False
     
     def update(self, game, delta):
-        if self.goHome:
-            self.nextWorld = PhysWorld(2, "tavern")
-            self.goHome = False
-        if not (self.nextWorld == None): #CHANGE WORLD
-            game.current.gui_screen = None
-            for ent in self.enteties:
-                self.physWorld.removeBody(ent.body)
-            self.enteties.clear()
-            self.physWorld = self.nextWorld
-            
-            self.initPlayer()
-            
-            self.nextWorld = None
         
         for entity in self.enteties:
             entity.update(game, delta)
