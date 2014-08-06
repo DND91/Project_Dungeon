@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sfml as sf
+import world.cool_math as cm
 
 def worldToScreen(v):
     return sf.Vector2((2.0*v.x - 2.0*v.y)/4.0, (v.x + v.y)/4.0)
@@ -10,7 +11,7 @@ def screenToWorld(v):
 class IsometricTile:
     radius = 16
     
-    def __init__(self, body, x, y, game, floor, roof, left, right):
+    def __init__(self, body, x, y, game, floor, roof, left, right, transparent):
         y += 32
         #x -= 32
         if not (floor == 0 or floor == ""):
@@ -49,18 +50,59 @@ class IsometricTile:
         self.x = x
         self.y = y
         self.body = body
+        self.transparent = transparent
     
     def draw(self, ps, game):
-        if self.floor != 0 and ps == 0:
-            #if self.active:
-            #    game.window.draw(self.active_floor)
-            #    self.active = False
-            #else:
-            game.window.draw(self.floor)
-        if self.roof != 0 and ps == 1:
-            game.window.draw(self.roof)
-        if self.left != 0 and ps == 1:
-            game.window.draw(self.left)
-        if self.right != 0 and ps == 1:
-            game.window.draw(self.right)
-    
+        if game.player == 0 or True:
+            if self.floor != 0 and ps == 0:
+                game.window.draw(self.floor)
+            if self.roof != 0 and ps == 1:
+                game.window.draw(self.roof)
+            if self.left != 0 and ps == 1:
+                game.window.draw(self.left)
+            if self.right != 0 and ps == 1:
+                game.window.draw(self.right)
+        else:
+            color = sf.Color(255, 255, 255, 255)
+            self.body.rectangle, self.body.shadowRectangle = self.body.shadowRectangle, self.body.rectangle
+            if (cm.intersects(self.body, game.player.body)) and self.transparent:
+                color = sf.Color(255, 255, 255, 100)
+            self.body.rectangle, self.body.shadowRectangle = self.body.shadowRectangle, self.body.rectangle
+            
+            if self.floor != 0 and ps == 0:
+                game.window.draw(self.floor)
+            if self.roof != 0 and ps == 1:
+                self.roof.color = color
+                game.window.draw(self.roof)
+            if self.left != 0 and ps == 1:
+                self.left.color = color
+                game.window.draw(self.left)
+            if self.right != 0 and ps == 1:
+                self.right.color = color
+                game.window.draw(self.right)
+            
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
