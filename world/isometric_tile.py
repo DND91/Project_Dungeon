@@ -53,7 +53,7 @@ class IsometricTile:
         self.transparent = transparent
     
     def draw(self, ps, game):
-        if game.player == 0 or True:
+        if game.player == 0:
             if self.floor != 0 and ps == 0:
                 game.window.draw(self.floor)
             if self.roof != 0 and ps == 1:
