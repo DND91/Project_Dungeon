@@ -7,7 +7,7 @@ class CreatureInventory:
     
     def __init__(self):
         
-        self._active = EquipmentSlot("any")
+        self._active = EquipmentSlot()
         self._slots = {"Amulet": EquipmentSlot("amulet"),
                       "Backpack": EquipmentSlot("backpack"),
                       "Belt": EquipmentSlot("belt"),

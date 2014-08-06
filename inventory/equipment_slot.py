@@ -3,10 +3,15 @@ class EquipmentSlot:
     def __init__(self, *types):
         self._types = types
         self._content = None
+        self._blocked = False
 
     @property
     def content(self):
         return self._content
+
+    @property
+    def blocked(self):
+        return self._blocked
 
     def _valid(self, item):
 
@@ -14,6 +19,12 @@ class EquipmentSlot:
             return True
 
         return False
+
+    def block(self):
+        self._blocked = True
+
+    def unblock(self):
+        self._blocked = False
 
     def empty(self):
         if self.content is None:
