@@ -4,6 +4,7 @@ from gui.gui_button import *
 from gui.gui_text import *
 from gui.gui_toys import *
 from gui.gui_world import *
+import gui.gui_progressbar as guipb
 import world.isometric_tile as iso
 import world.cool_phys as world
 import gui.gui_screen as gscr
@@ -109,7 +110,7 @@ class MainMenuScreen(Screen):
     
     def mouseClick(self, game, object, rect):
         if self.playButton == object:
-            game.next = PlayScreen(game, self)
+            game.next = LoadWorldScreen(game, self)
         elif self.optionButton == object:
             game.next = OptionScreen(self)
         elif self.helpButton == object:
@@ -229,7 +230,46 @@ class PlayScreen(Screen):
         return True
     
     
+class LoadWorldScreen(Screen):
     
+    def __init__(self, game, lastScreen, map = "Random"):
+        self.name = "LOAD_WORLD"
+        self.gui_list = []
+        self.gui_screen = None
+        self.lastScreen = lastScreen
+        
+        self.step = 0
+        self.goalStep = 10
+        
+        title = GuiText(10,10, "Loading...")
+        title.text.character_size = 32
+        title.text.style = sf.Text.BOLD
+        self.gui_list.append(title)
+        
+        pegbar = guipb.GuiProgressBas(10, game.window.height - 42, self.goalStep, game.window.width - 20)
+        self.bar = pegbar
+        self.gui_list.append(pegbar)
+        
+        self.bar.text.text.string = "TEST"
+        self.bar.text.text.style = sf.Text.BOLD
+        
+    
+    def update(self, game, delta):
+        super().update(game, delta)
+        
+        #LOAD STUFF
+        
+        
+        if self.step <= self.goalStep:
+            self.step += 1
+            self.bar.currentSteps = self.step
+        
+        if self.step == self.goalStep:
+            game.next = PlayScreen(game, self.lastScreen)
+        
+        
+        
+        
 
 
 
