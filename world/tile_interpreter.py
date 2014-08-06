@@ -6,7 +6,7 @@ import gui.gui_home_portal as ghp
 import world.isometric_tile as iso
 
 class TileInfo:
-    def __init__(self, char, solid,floor, roof, left, right, tileHandler):
+    def __init__(self, char, solid,floor, roof, left, right, tileHandler, transparent = True):
         self.char = char
         self.floor = floor
         self.roof = roof
@@ -14,6 +14,7 @@ class TileInfo:
         self.right = right
         self.tileHandler = tileHandler
         self.solid = solid
+        self.transparent = transparent
 
 
 class TileInterpreter:
@@ -29,8 +30,8 @@ class TileInterpreter:
             tileInfo = TileInfo("#", True, "", "NONE_ROOF", "NONE_WALLS", "NONE_WALLS", th.TileHandler())
         elif char == "D": #DOOR
             pos2 = iso.worldToScreen(pos)
-            drawTile = iso.IsometricTile(0, pos2.x, pos2.y, self.game, "OPEN_DOOR", "", "", "")
-            tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile))
+            drawTile = iso.IsometricTile(0, pos2.x, pos2.y, self.game, "OPEN_DOOR", "", "", "", False)
+            tileInfo = TileInfo("D", True, "", "CLOSED_DOOR", "", "", th.MassReverseTile(drawTile), False)
         elif char == "P": #WORLD PORTAL
             pos2 = iso.worldToScreen(pos)
             gui = gtp.GuiTavernPortal()

@@ -26,11 +26,13 @@ class PhysTile:
     
     def __init__(self, chunk, x, y, tileInfo):
         self.rectangle = sf.Rectangle((x,y),(self.tileSize,self.tileSize))
+        shadowRange = 2 * 64
+        self.shadowRectangle = sf.Rectangle((x-shadowRange,y-shadowRange),(self.tileSize+shadowRange,self.tileSize+shadowRange))
         self.chunk = chunk
         self.info = tileInfo
         
         pos = iso.worldToScreen(self.rectangle.position)
-        self.drawTile = iso.IsometricTile(self, pos.x, pos.y, game.Game, self.info.floor, self.info.roof, self.info.left, self.info.right)
+        self.drawTile = iso.IsometricTile(self, pos.x, pos.y, game.Game, self.info.floor, self.info.roof, self.info.left, self.info.right, self.info.transparent)
         self.tileHandler = self.info.tileHandler
         self.tileHandler.setup(self)
     

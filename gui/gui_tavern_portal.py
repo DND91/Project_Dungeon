@@ -21,12 +21,12 @@ class GuiTavernPortal(gscr.GuiScreen):
     def innerMouseClick(self, game, object, screen, rect):
         if self.world1_button == object:
             print("World 1")
-            game.next = LoadWorldScreen(game, worldSize = 4)
+            game.next = LoadWorldScreen(game, worldSize = 2)
         elif self.world2_button == object:
             print("World 2")
             game.next = LoadWorldScreen(game, worldSize = 4)
         elif self.world3_button == object:
             print("World 3")
-            game.next = LoadWorldScreen(game, worldSize = 4)
+            game.next = LoadWorldScreen(game, worldSize = 8)
             
 

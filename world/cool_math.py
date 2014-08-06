@@ -2,6 +2,11 @@
 import sfml as sf
 import math
 
+def getDistance(a, b):
+        dx = a.x - b.x
+        dy = a.y - b.y
+        return math.sqrt(math.pow(dx,2) + math.pow(dy,2))
+
 def gap(a, b):
     rectA = a.rectangle
     rectB = b.rectangle
