@@ -2,6 +2,7 @@
 import sfml as sf
 import gui.gui_screen as gscr
 import gui.gui_button as btn
+from gui.screen import LoadWorldScreen
 
 class GuiHomePortal(gscr.GuiScreen):
     def __init__(self):
@@ -16,5 +17,5 @@ class GuiHomePortal(gscr.GuiScreen):
     
     def innerMouseClick(self, game, object, screen, rect):
         if self.home_button == object:
-            screen.playGui.goHome = True
+            game.next = LoadWorldScreen(game, "tavern", 2) #TEMP FIX
             
