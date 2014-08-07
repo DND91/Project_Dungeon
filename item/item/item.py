@@ -1,21 +1,31 @@
 #!/usr/bin/python
 
 class Item:
-    def __init__(self):
-        self.name = "Standard"
-        self.cost = 0
+    def __init__(self, occurence):
+        self._name = None
+        self._cost = 0
+        self._occurence = occurence
     
     def __str__(self):
         return "Item." + self.name
     
     def __repr__(self):
         return self.__str__()
-    
-    def getName(self):
-        return self.name
-    
-    def getCost(self):
-        return self.cost
+
+    @property
+    def name(self):
+        return self._name
+        
+    @property
+    def cost(self):
+        return self._cost
+
+    @property
+    def occurence(self):
+        return self._occurence
+
+    def generate(self, stack, tp):
+        return tp
     
     def description(self, stack):
         return "How about no..."

@@ -15,7 +15,7 @@ class EquipmentSlot:
 
     def _valid(self, item):
 
-        if (any(slot in item.slots for slot in self._types)):
+        if item.slot in self._types:
             return True
 
         return False
@@ -61,4 +61,4 @@ class EquipmentSlot:
         if self.empty():
             print("nothing")
         else:
-            print(self._content.get_name())
+            print(self._content.name)

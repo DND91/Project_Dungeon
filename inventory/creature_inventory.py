@@ -1,9 +1,9 @@
-from inventory import *
-from equipment_slot import *
+from inventory.inventory import *
+from inventory.equipment_slot import *
 
 class CreatureInventory:
 
-    base_size = (3, 2)
+    base_size = (5, 2)
     
     def __init__(self):
         
@@ -20,8 +20,8 @@ class CreatureInventory:
                       "Earrings": EquipmentSlot("earrings"),
                       "Gauntlets": EquipmentSlot("gauntlets"),
                       "Greaves": EquipmentSlot("greaves"),
-                      "Hands": [EquipmentSlot("weapon"), 
-                                EquipmentSlot("weapon", "shield")],
+                       "Hands": [EquipmentSlot("1_hand", "2_hand"), 
+                                 EquipmentSlot("1_hand", "shield")],
                       "Headgear": EquipmentSlot("headgear"),
                       "Misc": [EquipmentSlot("misc")],
                       "Quick_use": [],
@@ -115,7 +115,7 @@ class CreatureInventory:
 
     @weight.setter
     def weight(self, value):
-        self.weight = value
+        self._weight = value
 
     @property
     def slots(self):

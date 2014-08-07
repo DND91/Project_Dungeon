@@ -5,38 +5,31 @@ import random as rnd
 import item.coperation.coperation_list as cops
 import math
 
-def tryToBuyFrom(highest, l, smallest = 0):
-    first = 0
-    last = 0
-    for indx, elm in reversed(list(enumerate(l))):
-        if elm.getCost() <= highest:
-            last = indx + 1
-            break
-    
-    for indx, elm in enumerate(l):
-        if smallest <= elm.getCost():
-            first = indx
-            break
-    
-    return rnd.choice(l[first:last])
+def tryToBuyFrom(highest, lib, smallest = 0):
+    candidate = lib.fetch()
+
+    if smallest <= candidate.cost <= highest:
+        return candidate
+    return None
 
 def generateItemStack(tp, amount, type = "Random",coop = None):
     startCost = tp
     #Item Class Chooice
-    itemC = 0
+    itemC = None
     if type == "Random":
-        itemC = tryToBuyFrom(tp, itms.items)
-        tp -= itemC.getCost()
+        while itemC is None:
+            itemC = tryToBuyFrom(tp, itms.items)
+        tp -= itemC.cost
     else:
         for item in itms.items:
-            if item.getName() == type:
+            if item.name == type:
                 itemC = item
                 break
     
     stack = its.ItemStack(itemC, amount)
     
     #Item Setup and Leftovers...
-    tp = itemC.setup(stack, tp)
+    tp = itemC.generate(stack, tp)
     
     stack.cost = startCost - tp
     
