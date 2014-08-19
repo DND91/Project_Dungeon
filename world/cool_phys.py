@@ -19,6 +19,8 @@ class PhysBody:
         self.mass = 100
         self.chunks = []
     
+    def getPass(self):
+        return self.owner.getPass()
 
 class PhysTile:
     #Tile Size, Coors per Tile
@@ -36,8 +38,14 @@ class PhysTile:
         self.tileHandler = self.info.tileHandler
         self.tileHandler.setup(self)
     
-    def draw(self, ps, game):
-        self.drawTile.draw(ps, game)
+    def draw(self, game):
+        self.drawTile.draw(game)
+    
+    def getPass(self):
+        return self.drawTile.getPass()
+    
+    def shallDraw(self, game):
+        return self.drawTile.shallDraw(game)
 
 class PhysChunk:
     #Chunk Size, Tiles per Chunk
@@ -88,16 +96,13 @@ class PhysChunk:
     def remove(self, body):
         self.bodies.discard(body)
     
-    def draw(self, ps, drawList, rect):
-        #drawList.extend(self.draweble)
-        
-        
+    def draw(self, game, drawList, rect):
         for dra in self.draweble:
-            if intersects(dra, rect):
-                drawList.add(dra)
+            if intersects(dra, rect) and dra.shallDraw(game):
+                drawList[dra.getPass()].add(dra)
         for dra in self.bodies:
             if intersects(dra, rect):
-                drawList.add(dra.owner)
+                drawList[dra.getPass()].add(dra.owner)
 
 class PhysWorld:
     
@@ -296,11 +301,11 @@ class PhysWorld:
             self.worldLock(body)
             self.chunkdate(body)
     
-    def draw(self, ps, drawList, rect):
+    def draw(self, game, drawList, rect):
         for row in self.chunks:
             for chunk in row:
                 if intersects(chunk, rect):
-                    chunk.draw(ps, drawList, rect)
+                    chunk.draw(game, drawList, rect)
 
 
 

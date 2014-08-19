@@ -22,11 +22,10 @@ class ItemEntity(entity.Entity):
         super().update(game, delta)
         self.stack.itemC.onGround(self.stack, self)
     
-    def draw(self, ps, game):
-        if ps == 1:
-            tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left+64, self.body.rectangle.top+64))
-            self.sprite.position = tempPos
-            game.window.draw(self.sprite)
+    def draw(self, game):
+        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left+64, self.body.rectangle.top+64))
+        self.sprite.position = tempPos
+        game.window.draw(self.sprite)
     
     def mouseClick(self, game):
         print(self.stack.name)

@@ -83,7 +83,7 @@ class GuiWorld(GuiObject):
                 self.addEntity(ball)
         '''
         
-        self.drawList = set()
+        self.drawList = [set(), set(), set(), set()]
         
         
     
@@ -144,24 +144,23 @@ class GuiWorld(GuiObject):
         if pss == 0:
             #BUILD DRAW LIST
             self.phys_screen, self.rectangle = self.rectangle, self.phys_screen
-            self.drawList.clear()
-            #for entity in self.enteties:
-                #if intersects(entity.body, self):
-                #    self.drawList.append(entity)
-                    #entity.draw(ps, game)
+            for l in self.drawList:
+                l.clear()
             
-            self.physWorld.draw(0, self.drawList, self)
+            self.physWorld.draw(game, self.drawList, self) #FILL LIST
             self.phys_screen, self.rectangle = self.rectangle, self.phys_screen
-            #SORT DRAW LIST
+            #SORT LIST
+            
             def compare(a, b):
                 return (a.rectangle.position.y + a.rectangle.position.x) - (b.rectangle.position.y + b.rectangle.position.x)
-            l = sorted(self.drawList, key=functools.cmp_to_key(compare))
             
-            #DRAW EVERYTHING IN LIST
-            for ps in range(3):
+            for li in self.drawList:
+                l = sorted(li, key=functools.cmp_to_key(compare))
                 for draweble in l:
-                    draweble.draw(ps, game)
+                    draweble.draw(game)
+                    
             
+            #DRAW FRAME
             game.window.draw(self.frame)
             game.window.draw(self.toolbar)
 

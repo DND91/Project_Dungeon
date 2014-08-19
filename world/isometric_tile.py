@@ -36,29 +36,21 @@ class IsometricTile:
         self.y = y
         self.body = body
         self.transparent = transparent
+        self.ps = 1
+        if self.isFloor:
+            self.ps = 0
     
-    def draw(self, ps, game):
-        if game.player == 0:
-            if self.isFloor and ps == 0:
-                game.window.draw(self.sprite)
-            elif not self.isFloor and ps == 1:
-                game.window.draw(self.sprite)
+    def draw(self, game):
+        game.window.draw(self.sprite)
+    
+    def getPass(self):
+        return self.ps
+    
+    def shallDraw(self, game):
+        if self.isFloor:
+            return True
         else:
-            if self.isFloor and ps == 0:
-                game.window.draw(self.sprite)
-            elif not self.isFloor and ps == 1:
-                #color = sf.Color(255, 255, 255, 255)
-                #if (cm.intersectsRect(self.body.shadowRectangle, game.player.sprite.global_bounds)) and self.transparent:
-                #    color = sf.Color(255, 255, 255, 50)
-                
-                #self.sprite.color = color
-                #pv = game.player.sprite.position.x + game.player.sprite.position.y - 64
-                #tv = self.sprite.position.x + self.sprite.position.y
-                if self.sprite.global_bounds.bottom < game.player.sprite.global_bounds.top or not self.transparent:
-                    game.window.draw(self.sprite)
-            
-            
-            
+            return self.sprite.global_bounds.bottom < game.player.sprite.global_bounds.top or not self.transparent
 
 
 
