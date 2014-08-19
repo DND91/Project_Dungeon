@@ -11,41 +11,26 @@ def screenToWorld(v):
 class IsometricTile:
     radius = 16
     
-    def __init__(self, body, x, y, game, floor, roof, left, right, transparent):
-        y += 32
+    def __init__(self, body, x, y, game):
+        isFloor = body.info.isFloor
+        text = body.info.txt
+        transparent = body.info.transparent
+        texture = game.textures.fetch(text)
+        self.sprite = sf.Sprite(texture)
+        self.realX = x
+        self.realY = y
+        #y += 32
         #x -= 32
-        if not (floor == 0 or floor == ""):
-            texture = game.textures.fetch(floor)
-            self.floor = sf.Sprite(texture)
-            self.floor.position = sf.Vector2(x,y)
-            texture2 = game.textures.fetch("ACTIVE_" + floor)
-            self.active_floor = sf.Sprite(texture2)
-            self.active_floor.position = sf.Vector2(x,y)
+        posistion = sf.Vector2(0,0)
+        if isFloor:
+            posistion.x = x
+            posistion.y = y + 32
         else:
-            self.floor = 0
-            self.active_floor = 0
+            posistion.x = x
+            posistion.y = y + 64 - texture.height
         
-        if not (roof == 0 or roof == ""):
-            texture = game.textures.fetch(roof)
-            self.roof = sf.Sprite(texture)
-            self.roof.position = sf.Vector2(x,y-31)
-        else:
-            self.roof = 0
-        if not (left == 0 or left == ""):
-            texture = game.textures.fetch(left)
-            self.left = sf.Sprite(texture)
-            self.left.position = sf.Vector2(x,y-15)
-            self.left.texture_rectangle = sf.Rectangle((0,0),(32,47))
-        else:
-            self.left = 0
-        
-        if not (right == 0 or right == ""):
-            texture = game.textures.fetch(right)
-            self.right = sf.Sprite(texture)
-            self.right.position = sf.Vector2(x+32,y-15)
-            self.right.texture_rectangle = sf.Rectangle((32,0),(32,47))
-        else:
-            self.right = 0
+        self.sprite.position = posistion
+        self.isFloor = isFloor
         
         self.x = x
         self.y = y
@@ -54,32 +39,23 @@ class IsometricTile:
     
     def draw(self, ps, game):
         if game.player == 0:
-            if self.floor != 0 and ps == 0:
-                game.window.draw(self.floor)
-            if self.roof != 0 and ps == 1:
-                game.window.draw(self.roof)
-            if self.left != 0 and ps == 1:
-                game.window.draw(self.left)
-            if self.right != 0 and ps == 1:
-                game.window.draw(self.right)
+            if self.isFloor and ps == 0:
+                game.window.draw(self.sprite)
+            elif not self.isFloor and ps == 1:
+                game.window.draw(self.sprite)
         else:
-            color = sf.Color(255, 255, 255, 255)
-            self.body.rectangle, self.body.shadowRectangle = self.body.shadowRectangle, self.body.rectangle
-            if (cm.intersects(self.body, game.player.body)) and self.transparent:
-                color = sf.Color(255, 255, 255, 100)
-            self.body.rectangle, self.body.shadowRectangle = self.body.shadowRectangle, self.body.rectangle
-            
-            if self.floor != 0 and ps == 0:
-                game.window.draw(self.floor)
-            if self.roof != 0 and ps == 1:
-                self.roof.color = color
-                game.window.draw(self.roof)
-            if self.left != 0 and ps == 1:
-                self.left.color = color
-                game.window.draw(self.left)
-            if self.right != 0 and ps == 1:
-                self.right.color = color
-                game.window.draw(self.right)
+            if self.isFloor and ps == 0:
+                game.window.draw(self.sprite)
+            elif not self.isFloor and ps == 1:
+                #color = sf.Color(255, 255, 255, 255)
+                #if (cm.intersectsRect(self.body.shadowRectangle, game.player.sprite.global_bounds)) and self.transparent:
+                #    color = sf.Color(255, 255, 255, 50)
+                
+                #self.sprite.color = color
+                #pv = game.player.sprite.position.x + game.player.sprite.position.y - 64
+                #tv = self.sprite.position.x + self.sprite.position.y
+                if self.sprite.global_bounds.bottom < game.player.sprite.global_bounds.top or not self.transparent:
+                    game.window.draw(self.sprite)
             
             
             

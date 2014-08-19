@@ -158,7 +158,7 @@ class GuiWorld(GuiObject):
             l = sorted(self.drawList, key=functools.cmp_to_key(compare))
             
             #DRAW EVERYTHING IN LIST
-            for ps in range(6):
+            for ps in range(3):
                 for draweble in l:
                     draweble.draw(ps, game)
             

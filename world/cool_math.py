@@ -31,6 +31,12 @@ def intersects(a, b):
     # make sure the rectangle is a rectangle (to get its right/bottom border)
     rectA = a.rectangle
     rectB = b.rectangle
+    return intersectsRect(rectA, rectB)
+
+def intersectsRect(a, b):
+    # make sure the rectangle is a rectangle (to get its right/bottom border)
+    rectA = a
+    rectB = b
 
     # compute the intersection boundaries
     left = max(rectB.left, rectA.left)

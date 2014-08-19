@@ -4,7 +4,7 @@ import sfml as sf
 import gui.gui_text as gui_text
 
 def run():
-    framerate_limit = 60.0
+    framerate_limit = 120.0
     game = Game()
     game.window.icon = game.textures.fetch("HORSE").to_image().pixels
     game.window.framerate_limit = framerate_limit
@@ -42,7 +42,7 @@ def run():
             fpsCounter.update(game, delta)
             #DRAW
             game.window.clear(sf.Color.BLACK)
-            for ps in range(6):
+            for ps in range(3):
                 game.current.draw(ps, game)
             time = time * 0.95 + secs * 0.05
             fpsCounter.text.string = (fps + str(round(1.0/time, 1)))
