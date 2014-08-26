@@ -128,14 +128,19 @@ class PhysWorld:
     def coordsToChunk(self, vec):
         return sf.Vector2(math.floor(vec.x/PhysChunk.pixelSize), math.floor(vec.y/PhysChunk.pixelSize))
     
-    #Want Tile x and y position in map
+    def coordsToTile(self, vec):
+        return sf.Vector2(math.floor(vec.x/PhysTile.tileSize), math.floor(vec.y/PhysTile.tileSize))
+    
+    #Want Tile posistion. Not coords tile posistion...
     def getTile(self, x, y):
-        chunkX = math.floor(x / self.worldSize)
-        chunkY = math.floor(y / self.worldSize)
+        chunkX = math.floor(x / PhysChunk.chunkSize)
+        chunkY = math.floor(y / PhysChunk.chunkSize)
         tileX = x % PhysChunk.chunkSize
         tileY = y % PhysChunk.chunkSize
         chunkX = min(chunkX, self.worldSize - 1)
         chunkY = min(chunkY, self.worldSize - 1)
+        if chunkX < 0 or chunkY < 0:
+            return None
         return self.chunks[chunkY][chunkX].tiles[tileY][tileX]
     
     def addBody(self, body):

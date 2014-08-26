@@ -10,6 +10,7 @@ import gui.gui_screen as gscr
 import gui.gui_test_screen as gtscr
 import gui.gui_load_icon as guili
 import generate.game_map as gmap
+import random
 
 
 class Screen:
@@ -164,7 +165,7 @@ class HelpScreen(Screen):
 
 class PlayScreen(Screen):
     
-    def __init__(self, game, physWorld, world):
+    def __init__(self, game, visWorld, world):
         self.name = "PLAY"
         self.gui_list = []
         self.gui_screen = None
@@ -355,21 +356,28 @@ class LoadWorldScreen(Screen):
         if(self.step == 92):
             self.physWorld = PhysWorld(self.ti, self.worldSize)
         
-        #Making The World
+        #Init Visual World
         if(self.step == 93):
+            self.bar.text.text.string = "Visualizing..."
+        
+        if(self.step == 94):
+            self.visWorld = VisWorld(self.physWorld)
+        
+        #Making The World
+        if(self.step == 95):
             self.bar.text.text.string = "Making The World..."
         
-        if(self.step == 95):
+        if(self.step == 96):
             x = 0
-            self.world = GuiWorld(self.physWorld)
+            self.world = GuiWorld(self.visWorld)
         
         #HERE WE WANT TO ADD MONSTERS AND ITEMS!
         
         #Init Player
-        if(self.step == 96):
+        if(self.step == 97):
             self.bar.text.text.string = "Playing God..."
         
-        if(self.step == 97):
+        if(self.step == 98):
             self.player = PlayerEntity(self.world, 0, 0, game)
             self.world.addEntity(self.player)
             game.player = self.player
@@ -381,7 +389,34 @@ class LoadWorldScreen(Screen):
         if(self.step == 101):
             self.player.body.rectangle.position = self.startPos
         
+        
+        
         #ADD MORE LOADING STUFF
+        #DEBUG TEST STUFF
+        if(self.step == 140):
+            self.bar.text.text.string = "Debugging...."
+        
+        if(self.step == 141):
+            for t in range(5):
+                x = 0
+                y = 0
+                
+                for r in range(10):
+                    x = random.randint(1, self.tileSize)
+                    y = random.randint(1, self.tileSize)
+                    tile = self.physWorld.getTile(x, y)
+                    if not (tile == 0) and not (tile.info.solid):
+                        break
+                
+                if random.randint(0, 5) == 0:
+                    monster = MonsterEntity(self.world, x*64,y*64, game, mgen.generateMonster(50))
+                    self.world.addEntity(monster)
+                if random.randint(0, 5) == 0:
+                    ie = ItemEntity(self.world, x*64,y*64, game, igen.generateItemStack(50, 1))
+                    self.world.addEntity(ie)
+                else:
+                    ball = BallEntity(self.world, x*64,y*64, game)
+                    self.world.addEntity(ball)
         
         #STEP HANDLING AND BOOT UP OF PLAY SCREEN
         if self.step <= self.goalStep:
@@ -389,7 +424,7 @@ class LoadWorldScreen(Screen):
             self.bar.currentSteps = self.step
         
         if self.step == self.goalStep:
-            game.next = PlayScreen(game, self.physWorld, self.world)
+            game.next = PlayScreen(game, self.visWorld, self.world)
             #self.bar.text.text.string = "DONE!"
         
         
@@ -411,7 +446,14 @@ class LoadWorldScreen(Screen):
 
 from gui.gui_world import GuiWorld
 from world.cool_phys import PhysWorld, PhysBody
-from entity.entity import PlayerEntity
+from world.cool_vis import VisWorld
+from entity.entity import PlayerEntity, BallEntity
+from entity.entity_item import ItemEntity
+from entity.entity_monster import MonsterEntity
+
+import item.generator as igen
+import entity.monster.generator as mgen
+
 from world.tile_interpreter import TileInterpreter
 
 
