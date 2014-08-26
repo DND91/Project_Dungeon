@@ -405,7 +405,7 @@ class LoadWorldScreen(Screen):
                     x = random.randint(1, self.tileSize)
                     y = random.randint(1, self.tileSize)
                     tile = self.physWorld.getTile(x, y)
-                    if not (tile == 0) and not (tile.info.solid):
+                    if not (tile == 0) and (tile.info.isFloor):
                         break
                 
                 if random.randint(0, 5) == 0:

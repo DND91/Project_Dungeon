@@ -96,13 +96,6 @@ class PhysChunk:
     def remove(self, body):
         self.bodies.discard(body)
     
-    def draw(self, game, drawList, rect):
-        for dra in self.draweble:
-            if intersects(dra, rect) and dra.shallDraw(game):
-                drawList[dra.getPass()].add(dra)
-        for dra in self.bodies:
-            if intersects(dra, rect):
-                drawList[dra.getPass()].add(dra.owner)
 
 class PhysWorld:
     
@@ -306,11 +299,6 @@ class PhysWorld:
             self.worldLock(body)
             self.chunkdate(body)
     
-    def draw(self, game, drawList, rect):
-        for row in self.chunks:
-            for chunk in row:
-                if intersects(chunk, rect):
-                    chunk.draw(game, drawList, rect)
 
 
 

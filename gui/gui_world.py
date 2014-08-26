@@ -29,7 +29,7 @@ class GuiWorld(GuiObject):
     frame_color = sf.Color(160, 160, 160)
     
     def __init__(self, visWorld):
-        self.physWorld = visWorld.world
+        self.physWorld = visWorld.physWorld
         self.visWorld = visWorld
         self.border = 3
         border = self.border
