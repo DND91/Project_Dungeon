@@ -19,6 +19,8 @@ class PhysBody:
         self.mass = 100
         self.chunks = []
     
+    def getPass(self):
+        return self.owner.getPass()
 
 class PhysTile:
     #Tile Size, Coors per Tile
@@ -26,18 +28,24 @@ class PhysTile:
     
     def __init__(self, chunk, x, y, tileInfo):
         self.rectangle = sf.Rectangle((x,y),(self.tileSize,self.tileSize))
-        shadowRange = 2 * 64
+        shadowRange = 2 * 64 + 32
         self.shadowRectangle = sf.Rectangle((x-shadowRange,y-shadowRange),(self.tileSize+shadowRange,self.tileSize+shadowRange))
         self.chunk = chunk
         self.info = tileInfo
         
         pos = iso.worldToScreen(self.rectangle.position)
-        self.drawTile = iso.IsometricTile(self, pos.x, pos.y, game.Game, self.info.floor, self.info.roof, self.info.left, self.info.right, self.info.transparent)
+        self.drawTile = iso.IsometricTile(self, pos.x, pos.y, game.Game)
         self.tileHandler = self.info.tileHandler
         self.tileHandler.setup(self)
     
-    def draw(self, ps, game):
-        self.drawTile.draw(ps, game)
+    def draw(self, game):
+        self.drawTile.draw(game)
+    
+    def getPass(self):
+        return self.drawTile.getPass()
+    
+    def shallDraw(self, game):
+        return self.drawTile.shallDraw(game)
 
 class PhysChunk:
     #Chunk Size, Tiles per Chunk
@@ -88,14 +96,6 @@ class PhysChunk:
     def remove(self, body):
         self.bodies.discard(body)
     
-    def draw(self, ps, drawList, rect):
-        #drawList.extend(self.draweble)
-        for dra in self.draweble:
-            if intersects(dra, rect):
-                drawList.add(dra)
-        for dra in self.bodies:
-            if intersects(dra, rect):
-                drawList.add(dra.owner)
 
 class PhysWorld:
     
@@ -121,14 +121,19 @@ class PhysWorld:
     def coordsToChunk(self, vec):
         return sf.Vector2(math.floor(vec.x/PhysChunk.pixelSize), math.floor(vec.y/PhysChunk.pixelSize))
     
-    #Want Tile x and y position in map
+    def coordsToTile(self, vec):
+        return sf.Vector2(math.floor(vec.x/PhysTile.tileSize), math.floor(vec.y/PhysTile.tileSize))
+    
+    #Want Tile posistion. Not coords tile posistion...
     def getTile(self, x, y):
-        chunkX = math.floor(x / self.worldSize)
-        chunkY = math.floor(y / self.worldSize)
+        chunkX = math.floor(x / PhysChunk.chunkSize)
+        chunkY = math.floor(y / PhysChunk.chunkSize)
         tileX = x % PhysChunk.chunkSize
         tileY = y % PhysChunk.chunkSize
         chunkX = min(chunkX, self.worldSize - 1)
         chunkY = min(chunkY, self.worldSize - 1)
+        if chunkX < 0 or chunkY < 0:
+            return None
         return self.chunks[chunkY][chunkX].tiles[tileY][tileX]
     
     def addBody(self, body):
@@ -294,11 +299,6 @@ class PhysWorld:
             self.worldLock(body)
             self.chunkdate(body)
     
-    def draw(self, ps, drawList, rect):
-        for row in self.chunks:
-            for chunk in row:
-                if intersects(chunk, rect):
-                    chunk.draw(ps, drawList, rect)
 
 
 

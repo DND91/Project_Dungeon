@@ -17,11 +17,10 @@ class MonsterEntity(entity.Entity):
         self.moviable = False
         self.stats = stats
     
-    def draw(self, ps, game):
-        if ps == 1:
-            tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-            self.sprite.position = tempPos
-            game.window.draw(self.sprite)
+    def draw(self, game):
+        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
+        self.sprite.position = tempPos
+        game.window.draw(self.sprite)
         
     
     def mouseClick(self, game):

@@ -31,18 +31,20 @@ class ActivationTile(TileHandler):
         self.tile.drawTile, self.drawTile = self.drawTile, self.tile.drawTile
 
 class MassReverseTile(TileHandler):
-    def __init__(self, drawTile):
+    def __init__(self, tileInfo):
         super().__init__()
-        self.drawTile = drawTile
+        self.info = tileInfo
+        self.info.tileHandler = self
     
     def setup(self, tile):
         self.tile = tile
-        self.drawTile.body = tile
     
     def mouseClick(self, game, object, rect):
         #self.tile.drawTile.active = not self.tile.drawTile.active
-        self.tile.drawTile, self.drawTile = self.drawTile, self.tile.drawTile
-        self.tile.info.solid = not self.tile.info.solid
+        self.tile.info, self.info = self.info, self.tile.info
+        x = self.tile.drawTile.realX
+        y = self.tile.drawTile.realY
+        self.tile.drawTile.__init__(self.tile, x,y, game)
 
 class OpenGUIScreenTile(TileHandler):
     

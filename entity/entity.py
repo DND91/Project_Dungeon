@@ -44,11 +44,14 @@ class Entity:
     def update(self, game, delta):
         self.rectangle = self.body.rectangle
     
-    def draw(self, ps, game):
+    def draw(self, game):
         x = 0
     
     def mouseClick(self, game):
         print("BODIES FOUND!")
+    
+    def getPass(self):
+        return 1
 
 class SolidEntity(Entity):
     name = "SOLIDENTITY"
@@ -61,11 +64,10 @@ class SolidEntity(Entity):
         self.body.mass = 1000
         self.moviable = False
     
-    def draw(self, ps, game):
-        if ps == 1:
-            tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-            self.sprite.position = tempPos
-            game.window.draw(self.sprite)
+    def draw(self, game):
+        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
+        self.sprite.position = tempPos
+        game.window.draw(self.sprite)
 
 class BallEntity(Entity):
     name = "BALLENTITY"
@@ -78,11 +80,10 @@ class BallEntity(Entity):
         self.body.mass = 2
         self.speed = 0.005
     
-    def draw(self, ps, game):
-        if ps == 1:
-            tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-            self.sprite.position = tempPos
-            game.window.draw(self.sprite)
+    def draw(self, game):
+        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
+        self.sprite.position = tempPos
+        game.window.draw(self.sprite)
 
 class PlayerEntity(Entity):
     name = "PLAYERENTITY"
@@ -95,11 +96,10 @@ class PlayerEntity(Entity):
         self.body.mass = 100
         self.speed = 0.005
     
-    def draw(self, ps, game):
-        if ps == 1:
-            tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-            self.sprite.position = tempPos
-            game.window.draw(self.sprite)
+    def draw(self, game):
+        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
+        self.sprite.position = tempPos
+        game.window.draw(self.sprite)
     
     def update(self, game, delta):
         super().update(game, delta)
