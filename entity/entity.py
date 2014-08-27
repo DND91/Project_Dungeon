@@ -3,17 +3,24 @@ import sfml as sf
 from math import *
 from world.isometric_tile import *
 from world.cool_phys import *
+import database.animation_database as vis
 
 class Entity:
     name = "ENTITY"
+    anibase = vis.AnimationDatabase()
     
-    def __init__(self, world, x, y, width, height):
+    def __init__(self, animation, world, x, y, width, height):
         self.body = PhysBody(self, x, y, width, height)
         self.rectangle = self.body.rectangle
         self.speed = 0
         self.world = world
         self.moviable = True
         self.solid = True
+        self.action = "STILL"
+        self.lastAction = self.action
+        self.count = 0
+        self.animation = animation
+        self.visPos = sf.Vector2(0, 0)
     
     def velocity(self, dx, dy):
         self.body.velocity.x = dx
@@ -28,7 +35,6 @@ class Entity:
         entityPos = entity.getCenter()
         dx = entityPos.x - selfPos.x
         dy = entityPos.y - selfPos.y
-        #distance = sqrt(pow(dx,2) + pow(dy,2))
         rads = atan2(dy,dx)
         rads %= 2*pi
         return rads
@@ -45,7 +51,9 @@ class Entity:
         self.rectangle = self.body.rectangle
     
     def draw(self, game):
-        x = 0
+        self.visPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
+        self.count += 1
+        self.anibase.draw(self.animation, self.action, self.count, self.visPos.x, self.visPos.y, game.window)
     
     def mouseClick(self, game):
         print("BODIES FOUND!")
@@ -57,70 +65,60 @@ class SolidEntity(Entity):
     name = "SOLIDENTITY"
     
     def __init__(self, world, x, y, game):
-        super().__init__(world, x, y, 64,64)
-        texture = game.textures.fetch("SOLID")
-        self.sprite = sf.Sprite(texture)
-        self.sprite.position = self.body.rectangle.position
+        super().__init__("SOLID", world, x, y, 64,64)
         self.body.mass = 1000
         self.moviable = False
-    
-    def draw(self, game):
-        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-        self.sprite.position = tempPos
-        game.window.draw(self.sprite)
 
 class BallEntity(Entity):
     name = "BALLENTITY"
     
     def __init__(self, world, x, y, game):
-        super().__init__(world, x, y, 64,64)
-        texture = game.textures.fetch("BALL")
-        self.sprite = sf.Sprite(texture)
-        self.sprite.position = self.body.rectangle.position
+        super().__init__("BALL", world, x, y, 64,64)
         self.body.mass = 2
         self.speed = 0.005
     
-    def draw(self, game):
-        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-        self.sprite.position = tempPos
-        game.window.draw(self.sprite)
 
 class PlayerEntity(Entity):
     name = "PLAYERENTITY"
     
+    
+    
     def __init__(self, world, x, y, game):
-        super().__init__(world, x, y, 64,64)
-        texture = game.textures.fetch("PLAYER")
-        self.sprite = sf.Sprite(texture)
-        self.sprite.position = self.body.rectangle.position
+        super().__init__("PLAYER", world, x, y, 64,64)
         self.body.mass = 100
         self.speed = 0.005
     
-    def draw(self, game):
-        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left, self.body.rectangle.top))
-        self.sprite.position = tempPos
-        game.window.draw(self.sprite)
     
     def update(self, game, delta):
         super().update(game, delta)
         dx = 0
         dy = 0
+        self.lastAction = self.action
+        next_action = "STILL"
         if sf.Keyboard.is_key_pressed(sf.Keyboard.W):
             #dy += -1
             #dx += -1
             dy -= 1
+            next_action = "MOVE"
         if sf.Keyboard.is_key_pressed(sf.Keyboard.S):
             #dy += 1
             #dx += 1
             dy += 1
+            next_action = "MOVE"
         if sf.Keyboard.is_key_pressed(sf.Keyboard.D):
             #dy += -1
             #dx += 1
             dx += 1
+            next_action = "MOVE"
         if sf.Keyboard.is_key_pressed(sf.Keyboard.A):
             #dy += 1
             #dx += -1
             dx -= 1
+            next_action = "MOVE"
+        
+        self.action = next_action
+        if not (self.action == self.lastAction):
+            self.count = 0
         
         self.velocity(dx*self.speed, dy*self.speed)
         game.offsetX = self.body.rectangle.left - (game.window.width/2) + (self.body.rectangle.width/2)

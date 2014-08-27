@@ -8,8 +8,9 @@ import glob
 window = sf.RenderWindow(sf.VideoMode(1024, 640), "Project: DUNG!", sf.window.Style.CLOSE, sf.ContextSettings(0,0,0,2,0))
 
 database = vis.AnimationDatabase()
-database.print()
+#database.print()
 
+count = 0
 while True:
     for event in window.events:
         if type(event) is sf.CloseEvent:
@@ -22,5 +23,6 @@ while True:
                 pause = True
     
     window.clear(sf.Color.BLACK)
-    
+    database.draw("PLAYER", "MOVE", count, 100, 100, window)
     window.display()
+    count += 1

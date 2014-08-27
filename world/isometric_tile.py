@@ -50,7 +50,7 @@ class IsometricTile:
         if self.isFloor:
             return True
         else:
-            return self.sprite.global_bounds.bottom < game.player.sprite.global_bounds.top or not self.transparent
+            return self.sprite.global_bounds.bottom < game.player.visPos.y or not self.transparent
 
 
 

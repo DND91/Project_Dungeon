@@ -9,10 +9,7 @@ class ItemEntity(entity.Entity):
     name = "ITEM_ENTITY"
     
     def __init__(self, world, x, y, game, stack):
-        super().__init__(world, x, y, 64,64)
-        texture = game.textures.fetch("ITEM_TILE")
-        self.sprite = sf.Sprite(texture)
-        self.sprite.position = self.body.rectangle.position
+        super().__init__("ITEM_TILE", world, x, y, 64,64)
         self.body.mass = 1
         self.moviable = False
         self.solid = False
@@ -23,9 +20,9 @@ class ItemEntity(entity.Entity):
         self.stack.itemC.onGround(self.stack, self)
     
     def draw(self, game):
-        tempPos = worldToScreen(sf.Vector2(self.body.rectangle.left+64, self.body.rectangle.top+64))
-        self.sprite.position = tempPos
-        game.window.draw(self.sprite)
+        self.visPos = worldToScreen(sf.Vector2(self.body.rectangle.left+64, self.body.rectangle.top+64))
+        self.count += 1
+        self.anibase.draw(self.animation, self.action, self.count, self.visPos.x, self.visPos.y, game.window)
     
     def mouseClick(self, game):
         print(self.stack.name)
