@@ -32,7 +32,7 @@ class VisWorld:
         tile = self.physWorld.getTile(pPos.x, pPos.y)
         tPos = self.physWorld.coordsToTile(tile.rectangle.position)
         
-        r = 10
+        r = 15 #CHANGE HERE TO 10!
         checkedChunk = list()
         x = pPos.x * 64 - r * 64
         y = pPos.y * 64 - r * 64
